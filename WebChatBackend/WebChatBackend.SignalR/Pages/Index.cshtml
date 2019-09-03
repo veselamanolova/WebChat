@@ -1,0 +1,45 @@
+﻿@page
+<div class="container">
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            User <input type="text" id="userInput" />
+            <br />
+            Message <input type="text" id="messageInput" />
+            Group <input type="text" id="groupInput" />
+            <input type="button" id="sendGlobalMessageButton" value="Send Global Message" />
+            <input type="button" id="sendButton" value="Send Message" />
+            <select id="group">
+                <option value="A">Group A</option>
+                <option value="B">Group B</option>
+                <option value="C">Group C</option>
+            </select>
+            <input type="button" id="joinGroup" value="Join group" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row">        
+        <div class="col-4">
+            <h3>All messages</h3>
+            <ul id="globalMessagesList"></ul>
+        </div>
+        <div class="col-4">
+            <h3>Group A</h3>
+            <ul id="groupAMessagesList"></ul>
+        </div>
+        <div class="col-4">
+            <h3>Group B</h3>
+            <ul id="groupBMessagesList"></ul>
+        </div>
+    </div>
+
+
+
+</div>
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>

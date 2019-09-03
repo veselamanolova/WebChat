@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WebChatBackend.Data\WebChatBackend.Data.csproj" />
+  </ItemGroup>
+
 </Project>
