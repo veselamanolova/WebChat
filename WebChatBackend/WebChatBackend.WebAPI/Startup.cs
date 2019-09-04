@@ -7,6 +7,7 @@ using WebChatBackend.Services;
 using WebChatBackend.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using WebChatBackend.Data;
+using Newtonsoft.Json.Serialization;
 
 namespace WebChatBackend.WebAPI
 {
@@ -29,9 +30,19 @@ namespace WebChatBackend.WebAPI
 
             // Add services
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IGroupService, GroupService>();
 
+            services.AddCors(o => o.AddPolicy("NotSecure", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +58,7 @@ namespace WebChatBackend.WebAPI
                 app.UseHsts();
             }
 
+            app.UseCors("NotSecure");
             app.UseHttpsRedirection();
             app.UseMvc();
         }
