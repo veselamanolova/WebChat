@@ -8,6 +8,6 @@ namespace WebChatBackend.Services.Contracts
 {
     public interface IGroupService
     {
-        Task<List<Message>> GetAllGlobalGroupMessagesAsync();
+       
     }
 }

@@ -17,23 +17,6 @@ namespace WebChatBackend.Services
         public GroupService(WebChatContext context)
         {
             _context = context;
-        }
-
-        public async Task<List<Message>> GetAllGlobalGroupMessagesAsync() =>
-            await _context.Mesages
-            .Where(m => m.GroupId == null)
-            .ToListAsync();
-
-        public async Task SaveGlobalGroupMessageAsync(int userId, string text, DateTime date)
-        {
-            await _context.Mesages.AddAsync(new Message()
-            {
-                GroupId = null,
-                UserId = userId, 
-                Text = text, 
-                Date = date
-            });
-            await _context.SaveChangesAsync();
-        }
+        }             
     }
 }

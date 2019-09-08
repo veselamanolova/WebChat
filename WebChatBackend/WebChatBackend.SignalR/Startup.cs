@@ -9,7 +9,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Chat.Hubs; 
+using Chat.Hubs;
+using WebChatBackend.Data;
+using Microsoft.EntityFrameworkCore;
+using WebChatBackend.Services.Contracts;
+using WebChatBackend.Services;
 
 namespace Chat
 {
@@ -25,6 +29,14 @@ namespace Chat
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<WebChatContext>(options =>
+              options.UseSqlServer(
+                  Configuration.GetConnectionString("DefaultConnection")));
+
+            // Add services
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IGroupService, GroupService>();
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -68,7 +80,7 @@ namespace Chat
             }
 
             //app.UseHttpsRedirection();
-            //app.UseStaticFiles();
+            app.UseStaticFiles();
             //app.UseCookiePolicy();
             app.UseCors("CorsPolicy");
             app.UseSignalR(routes =>
