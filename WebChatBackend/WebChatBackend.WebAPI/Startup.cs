@@ -8,6 +8,7 @@ using WebChatBackend.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using WebChatBackend.Data;
 using Newtonsoft.Json.Serialization;
+using WebChatBackend.Infrastructure;
 
 namespace WebChatBackend.WebAPI
 {
@@ -23,14 +24,7 @@ namespace WebChatBackend.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddDbContext<WebChatContext>(options =>
-               options.UseSqlServer(
-                   Configuration.GetConnectionString("DefaultConnection")));
-
-            // Add services
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IGroupService, GroupService>();
+            services.AddWebChatServices(Configuration);
 
             services.AddCors(o => o.AddPolicy("NotSecure", builder =>
             {

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebChatBackend.Data\WebChatBackend.Data.csproj" />
+    <ProjectReference Include="..\WebChatBackend.Infrastructure\WebChatBackend.Infrastructure.csproj" />
     <ProjectReference Include="..\WebChatBackend.Services\WebChatBackend.Services.csproj" />
   </ItemGroup>
 

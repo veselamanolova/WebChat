@@ -14,6 +14,7 @@ using WebChatBackend.Data;
 using Microsoft.EntityFrameworkCore;
 using WebChatBackend.Services.Contracts;
 using WebChatBackend.Services;
+using WebChatBackend.Infrastructure;
 
 namespace Chat
 {
@@ -29,13 +30,7 @@ namespace Chat
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<WebChatContext>(options =>
-              options.UseSqlServer(
-                  Configuration.GetConnectionString("DefaultConnection")));
-
-            // Add services
-            services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IGroupService, GroupService>();
+            services.AddWebChatServices(Configuration);
 
             services.Configure<CookiePolicyOptions>(options =>
             {
