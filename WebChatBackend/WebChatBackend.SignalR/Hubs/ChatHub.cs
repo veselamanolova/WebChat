@@ -15,16 +15,19 @@ namespace Chat.Hubs
             _messageService = messageService;
         }      
 
-        public Task JoinToGroup(string group)
+        public Task JoinToGroup(int groupId)
         {
-            return Groups.AddToGroupAsync(Context.ConnectionId, group);
+            return Groups.AddToGroupAsync(Context.ConnectionId, groupId.ToString());
         }
 
-        public async Task SendMessageToGroup(string name, string message, string group)
-        {           
-            await Clients.Group(group).SendAsync("ReceiveMessage", name, message, group);
-        }
-
+        public async Task SendMessageToGroup(string messageText, int groupId)
+        {
+            int userId = 1; //Context.User.Claims["..."]
+            Message realMessage = await _messageService.SaveGlobalGroupMessageAsync(userId, messageText, groupId);
+            await Clients.Group(groupId.ToString()).
+                SendAsync("ReceiveGroupMessage", realMessage);        
+        }   
+        
         public async Task SendMessageToGlobalGroup(string messageText)
         {
             int userId = 1; // Context.User.Claims["..."]

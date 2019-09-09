@@ -20,8 +20,8 @@ connection.on("ReceiveGlobalMessage", function (message) {
     document.getElementById("globalMessagesList").appendChild(CreateLi(encodedMsg));
 });
 
-
-connection.on("ReceiveMessage", function (user, message, group) {
+//"ReceiveMessage", messageText, groupId, userId
+connection.on("ReceiveMessage", function (message, group, user) {
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = user + " from " + group + " says " + msg;
     console.log(msg);

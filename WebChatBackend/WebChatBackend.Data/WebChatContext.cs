@@ -13,6 +13,7 @@ namespace WebChatBackend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Message> Mesages { get; set; }
+        public DbSet<UserGroup> UserGroup { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

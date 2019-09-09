@@ -9,84 +9,106 @@ class Chat extends Component {
       error: null,
       isLoaded: false,
       messages: [],
-      messageText: null,
+      messageText: "",
       name: null,
+      userId: 1,
       group: null,
+      groupId: 4,
       hubConnection: null,
     };
   }
 
-  componentWillMount() {
-    this.state.hubConnection = new signalR.HubConnectionBuilder()
+  componentDidMount() {
+
+    let hubConnection = new signalR.HubConnectionBuilder()
       .withUrl("http://localhost:5012/chatHub")
       //.configureLogging(signalR.LogLevel.Information)
       .configureLogging(signalR.LogLevel.Debug)
       .build();
-    console.log(this.hubConnection);
-
-  }
 
 
-  componentDidMount() {
 
-    const name = window.prompt('Your name:', 'Vesi');
+    this.setState({ hubConnection },
+      () => {
+        this.state.hubConnection
+          .start()
+          .then(() => {
+            console.info("SignalR connected");
+            if (this.state.groupId != null && this.state.groupId > 0) {
+              this.state.hubConnection.invoke("JoinToGroup", this.state.groupId)
+                .catch(function (err) {
+                  return console.error(err.toString());
+                });
+            }
+          },
+            error => {
+              this.setState({
+                isLoaded: true,
+                error
+              });
+            });
 
-    fetch("http://localhost:5000/api/messages")
+        if (this.state.groupId != null && this.state.groupId > 0) {
+
+          this.state.hubConnection.on("SendMessageToGroup", (name, message, groupId, receivedMessage) => {
+            const text = `${name}: ${receivedMessage}`;
+            const messages = this.state.messages.concat([text]);
+            this.setState({ messages });
+
+          });
+
+          this.state.hubConnection.on("ReceiveGroupMessage", (message) => {
+            const messages = this.state.messages;
+            messages.push(message);
+            this.setState({ messages });
+          });
+        }
+        else {
+          this.state.hubConnection.on('SendMessageToGlobalGroup', (name, receivedMessage) => {
+            const text = `${name}: ${receivedMessage}`;
+            const messages = this.state.messages.concat([text]);
+            this.setState({ messages });
+          });
+
+          this.state.hubConnection.on("ReceiveGlobalMessage", (message) => {
+            const messages = this.state.messages;
+            messages.push(message);
+            this.setState({ messages });
+          });
+        }
+      }
+    );
+
+    let groupId = "";
+    if (this.state.groupId) {
+      groupId = this.state.groupId;
+    }
+
+    fetch("http://localhost:5000/api/messages/" + groupId)
       .then(res => res.json())
-      .then(
-        result => {
-          this.setState({
-            isLoaded: true,
-            messages: result
-          });
+      .then(result => {
+        this.setState({
+          isLoaded: true,
+          messages: result
         });
-
-    // this.hubConnection = new signalR.HubConnectionBuilder()
-    //   .withUrl("http://localhost:5012/chatHub")
-    //   .configureLogging(signalR.LogLevel.Information)
-    //   .build();
-
-
-    //  this.setState({ hubConnection, name }, () => {
-    this.state.hubConnection
-      .start()
-      .then(() => {
-        console.info("SignalR connected");
-      },
-        error => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        });
-    // Note: it's important to handle errors here
-    // instead of a catch() block so that we don't swallow
-    // exceptions from actual bugs in components.
-
-
-    this.state.hubConnection.on('SendMessageToGlobalGroup', (name, receivedMessage) => {
-      const text = `${name}: ${receivedMessage}`;
-      const messages = this.state.messages.concat([text]);
-      this.setState({ messages });
-    });
-
-
-
-    this.state.hubConnection.on("ReceiveGlobalMessage", (message) => {
-      console.log(message);
-      console.log("messages: " + this.state.messages)
-      const messages = this.state.messages;
-      messages.push(message);
-      this.setState({ messages });
-    });
+      }
+      );
   }
 
   sendMessage = () => {
-    this.state.hubConnection
-      .invoke("SendMessageToGlobalGroup", this.state.messageText)
-      .catch(err => console.error(err));
+    if (this.state.groupId == null) {
+      this.state.hubConnection
+        .invoke("SendMessageToGlobalGroup", this.state.messageText)
+        .catch(err => console.error(err));
 
-    this.setState({ messageText: '' });
+      this.setState({ messageText: '' });
+    } else {
+      this.state.hubConnection
+        .invoke("SendMessageToGroup", this.state.messageText, this.state.groupId)
+        .catch(err => console.error(err));
+
+      this.setState({ messageText: '' });
+    }
   };
 
   render() {
@@ -98,7 +120,6 @@ class Chat extends Component {
       return <div>Loading...</div>;
     } else if (messages.lenght === 0) return <p> No messages</p>;
     else {
-      console.log(messages);
       return (
         <div>
           <ul>
@@ -120,9 +141,6 @@ class Chat extends Component {
 
           <button onClick={this.sendMessage}>Send</button>
         </div>
-
-
-
       );
     }
   }
