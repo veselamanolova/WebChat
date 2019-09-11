@@ -1,19 +1,22 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WebChatBackend.Services;
-using WebChatBackend.Services.Contracts;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using WebChatBackend.Data;
-using Newtonsoft.Json.Serialization;
+using WebChatBackend.Data.Models;
 using WebChatBackend.Infrastructure;
 
 namespace WebChatBackend.WebAPI
 {
     public class Startup
-    {
+    {      
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,16 +29,42 @@ namespace WebChatBackend.WebAPI
         {
             services.AddWebChatServices(Configuration);
 
-            services.AddCors(o => o.AddPolicy("NotSecure", builder =>
+            services.AddCors(o => o.AddPolicy("CorsPolicy", policy =>
             {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
+                policy
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             }));
 
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            var builder = services.AddIdentityCore<User>();
+            var IdentityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+            IdentityBuilder.AddEntityFrameworkStores<WebChatContext>();
+            IdentityBuilder.AddSignInManager<SignInManager<User>>();
+
+
+             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecurityKey"]));
+
+            services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt => 
+                {
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = key,  
+                        ValidateAudience = false,
+                        ValidateIssuer = false
+                    };
+
+            });
+
+            // By default ASP.NET modifies the claims in the tokens and this is not desired so we need to clear the mapping
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,7 +80,8 @@ namespace WebChatBackend.WebAPI
                 app.UseHsts();
             }
 
-            app.UseCors("NotSecure");
+            app.UseAuthentication(); 
+            app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
             app.UseMvc();
         }

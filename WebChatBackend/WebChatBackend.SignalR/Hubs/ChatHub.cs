@@ -22,7 +22,7 @@ namespace Chat.Hubs
 
         public async Task SendMessageToGroup(string messageText, int groupId)
         {
-            int userId = 1; //Context.User.Claims["..."]
+            string userId = "f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3"; //Context.User.Claims["..."]
             Message realMessage = await _messageService.SaveGlobalGroupMessageAsync(userId, messageText, groupId);
             await Clients.Group(groupId.ToString()).
                 SendAsync("ReceiveGroupMessage", realMessage);        
@@ -30,7 +30,7 @@ namespace Chat.Hubs
         
         public async Task SendMessageToGlobalGroup(string messageText)
         {
-            int userId = 1; // Context.User.Claims["..."]
+            string userId = "f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3"; // Context.User.Claims["..."]
             Message realMessage = await _messageService.SaveGlobalGroupMessageAsync(userId, messageText); 
 
             await Clients.All.SendAsync("ReceiveGlobalMessage", realMessage);

@@ -10,8 +10,8 @@ using WebChatBackend.Data;
 namespace WebChatBackend.Data.Migrations
 {
     [DbContext(typeof(WebChatContext))]
-    [Migration("20190902114115_Initial")]
-    partial class Initial
+    [Migration("20190910131628_2")]
+    partial class _2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -44,12 +44,12 @@ namespace WebChatBackend.Data.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<int>("GroupId");
+                    b.Property<int?>("GroupId");
 
                     b.Property<string>("Text")
                         .IsRequired();
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
@@ -60,15 +60,36 @@ namespace WebChatBackend.Data.Migrations
 
             modelBuilder.Entity("WebChatBackend.Data.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(40);
+                    b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("Password");
+                    b.Property<string>("ConcurrencyStamp");
+
+                    b.Property<string>("Email");
+
+                    b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("LockoutEnabled");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("NormalizedEmail");
+
+                    b.Property<string>("NormalizedUserName");
+
+                    b.Property<string>("PasswordHash");
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<string>("SecurityStamp");
+
+                    b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<string>("UserName");
 
                     b.HasKey("Id");
 
@@ -77,7 +98,7 @@ namespace WebChatBackend.Data.Migrations
 
             modelBuilder.Entity("WebChatBackend.Data.Models.UserGroup", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId");
 
                     b.Property<int>("GroupId");
 
@@ -94,8 +115,7 @@ namespace WebChatBackend.Data.Migrations
                 {
                     b.HasOne("WebChatBackend.Data.Models.Group")
                         .WithMany("Messages")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("GroupId");
                 });
 
             modelBuilder.Entity("WebChatBackend.Data.Models.UserGroup", b =>

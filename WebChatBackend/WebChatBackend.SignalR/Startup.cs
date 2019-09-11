@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Chat.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Chat.Hubs;
 using WebChatBackend.Data;
-using Microsoft.EntityFrameworkCore;
-using WebChatBackend.Services.Contracts;
-using WebChatBackend.Services;
+using WebChatBackend.Data.Models;
 using WebChatBackend.Infrastructure;
 
 namespace Chat
@@ -39,25 +33,30 @@ namespace Chat
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            services.AddCors(options => options.AddPolicy("CorsPolicy", policy =>
             {
-                builder
+                policy
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .WithOrigins("http://localhost:3000")
                    // .DisallowCredentials();
-                    .AllowCredentials();
-            }));
-
-           
+                   .AllowCredentials();
+            }));           
 
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);          
-           
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            var builder = services.AddIdentityCore<User>();
+            var IdentityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+            IdentityBuilder.AddEntityFrameworkStores<WebChatContext>();
+            IdentityBuilder.AddSignInManager<SignInManager<User>>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

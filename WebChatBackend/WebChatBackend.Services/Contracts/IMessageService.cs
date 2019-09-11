@@ -8,10 +8,10 @@ namespace WebChatBackend.Services.Contracts
     {
         Task<List<Message>> GetAllGlobalGroupMessagesAsync();
 
-        Task<List<Message>> GetGroupMessagesAsync(int groupId, int currentUserId);
+        Task<List<Message>> GetGroupMessagesAsync(int groupId, string currentUserId);
 
-        Task<Message> SaveGlobalGroupMessageAsync(int userId, string text);
+        Task<Message> SaveGlobalGroupMessageAsync(string userId, string text);
 
-        Task<Message> SaveGlobalGroupMessageAsync(int userId, string text, int groupId);
+        Task<Message> SaveGlobalGroupMessageAsync(string userId, string text, int groupId);
     }
 }

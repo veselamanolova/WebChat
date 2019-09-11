@@ -11,9 +11,9 @@ class Chat extends Component {
       messages: [],
       messageText: "",
       name: null,
-      userId: 1,
+      userId: "f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3",
       group: null,
-      groupId: 4,
+      groupId: 1,
       hubConnection: null,
     };
   }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using WebChatBackend.Data;
 using WebChatBackend.Services;
 using WebChatBackend.Services.Contracts;
+using WebChatBackend.Services.UserManagement;
 
 namespace WebChatBackend.Infrastructure
 {
@@ -15,8 +15,11 @@ namespace WebChatBackend.Infrastructure
             services.AddDbContext<WebChatContext>(options =>
                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IJwtGenerator, JwtGenerator> (); 
+
 
             return services;
 

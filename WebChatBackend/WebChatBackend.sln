@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebChatBackend.WebAPI", "We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebChatBackend.SignalR", "WebChatBackend.SignalR\WebChatBackend.SignalR.csproj", "{C87D76D1-FA88-4DB1-A283-65C20878DD81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChatBackend.Infrastructure", "WebChatBackend.Infrastructure\WebChatBackend.Infrastructure.csproj", "{339AF715-31ED-4E39-8B09-A85A572B1CAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebChatBackend.Infrastructure", "WebChatBackend.Infrastructure\WebChatBackend.Infrastructure.csproj", "{339AF715-31ED-4E39-8B09-A85A572B1CAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

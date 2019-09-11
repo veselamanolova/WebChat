@@ -1,22 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WebChatBackend.Data.Models;
 
 namespace WebChatBackend.Data
 {
-    public class WebChatContext : DbContext
+    //public class WebChatContext : DbContext
+    public class WebChatContext : IdentityDbContext<User>
     {
         public WebChatContext(DbContextOptions<WebChatContext> options)
             : base(options)
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Message> Mesages { get; set; }
         public DbSet<UserGroup> UserGroup { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<UserGroup>()
                 .HasKey(ug => new {ug.UserId, ug.GroupId});
 

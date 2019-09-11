@@ -19,7 +19,7 @@ namespace WebChatBackend.WebAPI.Controllers
         
         // GET api/Groups/5
         [HttpGet("{id}")]        
-        public async Task<ActionResult<List<Group>>> Get(int userId)
+        public async Task<ActionResult<List<Group>>> Get(string userId)
         {           
             List<Group> userGroups = await _groupService.GetUserGroupsAsync(userId);
             return userGroups;
