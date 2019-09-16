@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebChatBackend.SignalR", "W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebChatBackend.Infrastructure", "WebChatBackend.Infrastructure\WebChatBackend.Infrastructure.csproj", "{339AF715-31ED-4E39-8B09-A85A572B1CAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebChatBackend.Common", "WebChatBackend.Common\WebChatBackend.Common.csproj", "{94A15D4C-A5FF-47D0-9013-AE78BFF15EDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{339AF715-31ED-4E39-8B09-A85A572B1CAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{339AF715-31ED-4E39-8B09-A85A572B1CAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{339AF715-31ED-4E39-8B09-A85A572B1CAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94A15D4C-A5FF-47D0-9013-AE78BFF15EDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94A15D4C-A5FF-47D0-9013-AE78BFF15EDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94A15D4C-A5FF-47D0-9013-AE78BFF15EDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94A15D4C-A5FF-47D0-9013-AE78BFF15EDC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

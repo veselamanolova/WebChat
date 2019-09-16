@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Chat from "./components/chat.jsx";
+import Login from "./components/login.jsx";
 
 class App extends Component {
 
@@ -13,7 +14,7 @@ class App extends Component {
     return (
       <React.Fragment>
         <main className="container">
-          <Chat />
+          <Login />
         </main>
       </React.Fragment>
     );

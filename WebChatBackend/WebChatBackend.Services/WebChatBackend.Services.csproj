@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebChatBackend.Common\WebChatBackend.Common.csproj" />
     <ProjectReference Include="..\WebChatBackend.Data\WebChatBackend.Data.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
+using WebChatBackend.Common;
+using WebChatBackend.Data;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Services.Contracts;
 
@@ -8,14 +13,16 @@ namespace WebChatBackend.Services.UserManagement
 {
     public class UserService: IUserService
     {
+        private readonly WebChatContext _context;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IJwtGenerator _jwtGenerator;
         private readonly IConfiguration _configuration;
 
-        public UserService(UserManager<User> userManager, SignInManager<User> signInManager, 
+        public UserService(WebChatContext context, UserManager<User> userManager, SignInManager<User> signInManager, 
             IJwtGenerator jwtGenerator, IConfiguration configuration)
-        {         
+        {
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtGenerator = jwtGenerator;
@@ -24,6 +31,16 @@ namespace WebChatBackend.Services.UserManagement
 
         public async Task<LoginResponse> LoginAsync(LoginCredentials loginCredentials)
         {
+            if (String.IsNullOrEmpty(loginCredentials.Email))
+            {
+                throw new ArgumentException("Please provide e-mail!"); 
+            }
+
+            if (String.IsNullOrEmpty(loginCredentials.Password))
+            {
+                throw new ArgumentException("Please provide passsword!");
+            }
+
             var user = await _userManager.FindByEmailAsync(loginCredentials.Email);
             if (user == null)
             {
@@ -43,13 +60,60 @@ namespace WebChatBackend.Services.UserManagement
             };
         }
 
-        //private async Task VerifyLoginCredentialsAsync(string userEmail, string Password)
-        //{
-        //    //bool result = await _context.UserGroup.AnyAsync(ug => ug.UserId == userId && ug.GroupId == groupId);
-        //    //if (!result)
-        //    //{
-        //    //    throw new GroupAccessException();
-        //    //}
-        //}
+
+        public async Task<LoginResponse> RegisterAsync(RegisterCredentials registerCredentials)
+        {
+            if (String.IsNullOrEmpty(registerCredentials.UserName))
+            {
+                throw new ArgumentException(GlobalConstants.emptyUserName);
+            }
+
+            if (String.IsNullOrEmpty(registerCredentials.Email))
+            {
+                throw new ArgumentException(GlobalConstants.emptyEmail);
+            }
+
+            if (String.IsNullOrEmpty(registerCredentials.Password))
+            {
+                throw new ArgumentException(GlobalConstants.emptyPassword);
+            }
+
+            if( await _context.Users.Where(x=> x.Email == registerCredentials.Email).AnyAsync())
+            {
+                throw new ArgumentException(GlobalConstants.emailIsOccupied); 
+            }
+
+            if (await _context.Users.Where(x => x.UserName == registerCredentials.UserName).AnyAsync())
+            {
+                throw new ArgumentException(GlobalConstants.nameIsOccupied);
+            }
+
+            var user = new User
+            {
+                UserName = registerCredentials.UserName,
+                Email = registerCredentials.Email,
+            }; 
+
+            await _userManager.CreateAsync(user, registerCredentials.Password);
+
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var signInResult = await _signInManager.CheckPasswordSignInAsync(user, registerCredentials.Password, false);
+            if (!signInResult.Succeeded)
+            {
+                return null;
+            }
+
+            return new LoginResponse()
+            {
+                UserName = user.UserName,
+                Token = _jwtGenerator.CreateToken(user, _configuration["SecurityKey"])
+            };
+        }
+
     }
 }
