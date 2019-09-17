@@ -13,20 +13,19 @@ class Chat extends Component {
       name: null,
       userId: "f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3",
       group: null,
-      groupId: 1,
+      groupId: null,
       hubConnection: null,
     };
   }
 
   componentDidMount() {
 
+    const { userName, token } = this.props;
+
     let hubConnection = new signalR.HubConnectionBuilder()
       .withUrl("http://localhost:5012/chatHub")
-      //.configureLogging(signalR.LogLevel.Information)
       .configureLogging(signalR.LogLevel.Debug)
       .build();
-
-
 
     this.setState({ hubConnection },
       () => {
@@ -84,7 +83,13 @@ class Chat extends Component {
       groupId = this.state.groupId;
     }
 
-    fetch("http://localhost:5000/api/messages/" + groupId)
+    fetch("http://localhost:5000/api/messages/" + groupId, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "Authorization": "Bearer " + { token }
+      }
+    })
       .then(res => res.json())
       .then(result => {
         this.setState({
@@ -112,7 +117,6 @@ class Chat extends Component {
   };
 
   render() {
-    //object destructoring
     const { error, isLoaded, messages, messageText } = this.state;
     if (error) {
       return <div>Error: {error.message}</div>;

@@ -5,27 +5,16 @@ class Login extends React.Component {
         super(props);
         var localStrUserData = localStorage.getItem('logedInUserData');
         console.log(localStrUserData);
-        if (localStrUserData) {
-            this.setState({
-
-                token: localStrUserData.token
-            });
-        }
         this.state = {
             email: '',
             password: '',
             userName: '',
             token: ''
         };
-
     }
-
 
     componentDidMount() {
-
-
     }
-
 
     sendLoginCredentials = async () => {
         console.log(this.state.email + " " + this.state.password)
@@ -41,7 +30,7 @@ class Login extends React.Component {
             .then(res => res.json())
             .then(result => {
                 console.log(result);
-                localStorage.setItem('logedInUserData', result.token);
+                localStorage.setItem('logedInUserData', JSON.stringify(result));
                 this.setState({
                     userName: result.userName,
                     token: result.token
