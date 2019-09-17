@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebChatBackend.Common;
@@ -28,6 +29,15 @@ namespace WebChatBackend.Services.UserManagement
             _jwtGenerator = jwtGenerator;
             _configuration = configuration;
         }
+
+        public async Task<List<BasicUserInfo>> GetAllUsers() =>
+           await _context.Users.Select(u => new BasicUserInfo
+           {
+               Id = u.Id,
+               UserName = u.UserName
+           })
+            .OrderBy(u => u.UserName)
+            .ToListAsync();
 
         public async Task<LoginResponse> LoginAsync(LoginCredentials loginCredentials)
         {
@@ -59,7 +69,6 @@ namespace WebChatBackend.Services.UserManagement
                 Token = _jwtGenerator.CreateToken(user, _configuration["SecurityKey"])
             };
         }
-
 
         public async Task<LoginResponse> RegisterAsync(RegisterCredentials registerCredentials)
         {

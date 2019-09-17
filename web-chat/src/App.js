@@ -1,15 +1,18 @@
 import React, { Component } from "react";
-import Chat from "./components/chat.jsx";
-import Login from "./components/login.jsx";
-import { Route } from 'react-router-dom'
+import { Route, Link, BrowserRouter as Router, Switch } from 'react-router-dom'
+import Chat from "./components/chat";
+import Login from "./components/login";
+import Notfound from "./components/notfound";
+import Users from "./components/users";
 
 class App extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      userName: null,
-      token: null
+      // userName: null,
+      // token: null
+      userData: {}
     };
   }
 
@@ -20,25 +23,40 @@ class App extends Component {
     if (userData) {
       console.log("in if statement")
       var userDataObj = JSON.parse(userData);
-      this.setState.userName = userDataObj.userName;
-      this.setState.token = userDataObj.token;
-      console.log("state token" + this.setState.token);
+      this.setState({
+        // userName: userDataObj.userName,
+        // token: userDataObj.token
+        userData: userDataObj
+      });
     }
   }
 
   render() {
 
-    if ([...this.state.token]) {
+    if (this.state.userData && this.state.userData.token) {
       console.log("in state token")
       return (
-        <React.Fragment>
-          <main className="container">
-            <Chat
-              userName={this.state.userName}
-              token={this.state.token}
-            />
-          </main>
-        </React.Fragment>
+        <Router>
+          <div>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/users">Users</Link>
+              </li>
+              <li>
+                <Link to="/groups">Groups</Link>
+              </li>
+            </ul>
+            <Switch>
+              <Route exact path="/" component={() => <Chat userData={this.state.userData} />} />
+              <Route path="/users" component={() => <Users userData={this.state.userData} />} />
+              <Route path="/groups" component={Chat} />
+              <Route component={Notfound} />
+            </Switch>
+          </div>
+        </Router>
       );
     }
     else {

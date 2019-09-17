@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebChatBackend.Services.Contracts;
 using WebChatBackend.Services.UserManagement;
@@ -33,8 +35,7 @@ namespace WebChatBackend.WebAPI.Controllers
             catch (Exception ex)
             {
                 return Unauthorized(ex.Message);
-            }
-           
+            }           
         }
 
         [HttpPost("register")]
@@ -53,10 +54,13 @@ namespace WebChatBackend.WebAPI.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest( ex.Message);
-            }
-            
-            
+            }   
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<BasicUserInfo>>> Get()
+        {
+            return await _userService.GetAllUsers();            
+        }
     }
 }

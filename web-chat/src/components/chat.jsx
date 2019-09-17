@@ -13,14 +13,14 @@ class Chat extends Component {
       name: null,
       userId: "f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3",
       group: null,
-      groupId: null,
+      groupId: 1,
       hubConnection: null,
     };
   }
 
   componentDidMount() {
 
-    const { userName, token } = this.props;
+    const { userName, token } = this.props.userData;
 
     let hubConnection = new signalR.HubConnectionBuilder()
       .withUrl("http://localhost:5012/chatHub")
@@ -87,7 +87,7 @@ class Chat extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": "Bearer " + { token }
+        "Authorization": "Bearer " + token
       }
     })
       .then(res => res.json())
@@ -98,6 +98,10 @@ class Chat extends Component {
         });
       }
       );
+  }
+
+  componentWillUnmount() {
+    this.state.hubConnection.stop();
   }
 
   sendMessage = () => {
