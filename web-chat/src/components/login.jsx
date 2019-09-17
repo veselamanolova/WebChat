@@ -35,7 +35,8 @@ class Login extends React.Component {
                     userName: result.userName,
                     token: result.token
                 });
-            });
+            })
+            .then(this.props.history.push("/"));
     };
 
 

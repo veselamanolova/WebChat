@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Chat from "./components/chat.jsx";
 import Login from "./components/login.jsx";
+import { Route } from 'react-router-dom'
 
 class App extends Component {
 
@@ -26,6 +27,7 @@ class App extends Component {
   }
 
   render() {
+
     if ([...this.state.token]) {
       console.log("in state token")
       return (
