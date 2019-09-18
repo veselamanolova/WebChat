@@ -7,6 +7,7 @@ class Login extends React.Component {
         console.log(localStrUserData);
         this.state = {
             email: '',
+            userId: '',
             password: '',
             userName: '',
             token: ''
@@ -32,6 +33,7 @@ class Login extends React.Component {
                 console.log(result);
                 localStorage.setItem('logedInUserData', JSON.stringify(result));
                 this.setState({
+                    userId: result.userId,
                     userName: result.userName,
                     token: result.token
                 });

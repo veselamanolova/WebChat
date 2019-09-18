@@ -135,6 +135,8 @@ namespace WebChatBackend.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("IsPrivateChat");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(40);
@@ -222,8 +224,6 @@ namespace WebChatBackend.Data.Migrations
                     b.Property<string>("UserId");
 
                     b.Property<int>("GroupId");
-
-                    b.Property<bool>("IsUserGroupAdmin");
 
                     b.HasKey("UserId", "GroupId");
 

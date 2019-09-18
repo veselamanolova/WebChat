@@ -65,6 +65,7 @@ namespace WebChatBackend.Services.UserManagement
 
             return new LoginResponse()
             {
+                UserId = user.Id,
                 UserName = user.UserName,
                 Token = _jwtGenerator.CreateToken(user, _configuration["SecurityKey"])
             };
@@ -119,6 +120,7 @@ namespace WebChatBackend.Services.UserManagement
 
             return new LoginResponse()
             {
+                UserId = user.Id,
                 UserName = user.UserName,
                 Token = _jwtGenerator.CreateToken(user, _configuration["SecurityKey"])
             };

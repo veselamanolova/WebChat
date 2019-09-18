@@ -4,6 +4,7 @@ import Chat from "./components/chat";
 import Login from "./components/login";
 import Notfound from "./components/notfound";
 import Users from "./components/users";
+import Groups from "./components/groups";
 
 class App extends Component {
 
@@ -22,6 +23,7 @@ class App extends Component {
 
     if (userData) {
       console.log("in if statement")
+      debugger;
       var userDataObj = JSON.parse(userData);
       this.setState({
         // userName: userDataObj.userName,
@@ -52,7 +54,7 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={() => <Chat userData={this.state.userData} />} />
               <Route path="/users" component={() => <Users userData={this.state.userData} />} />
-              <Route path="/groups" component={Chat} />
+              <Route path="/groups" component={() => <Groups userData={this.state.userData} />} />
               <Route component={Notfound} />
             </Switch>
           </div>

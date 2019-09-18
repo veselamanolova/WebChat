@@ -13,14 +13,14 @@ class Chat extends Component {
       name: null,
       userId: "f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3",
       group: null,
-      groupId: 1,
+      groupId: null,
       hubConnection: null,
     };
   }
 
   componentDidMount() {
 
-    const { userName, token } = this.props.userData;
+    const { userId, userName, token, groupId } = this.props.userData;
 
     let hubConnection = new signalR.HubConnectionBuilder()
       .withUrl("http://localhost:5012/chatHub")
@@ -47,7 +47,7 @@ class Chat extends Component {
               });
             });
 
-        if (this.state.groupId != null && this.state.groupId > 0) {
+        if (groupId != null && groupId > 0) {
 
           this.state.hubConnection.on("SendMessageToGroup", (name, message, groupId, receivedMessage) => {
             const text = `${name}: ${receivedMessage}`;
@@ -78,12 +78,12 @@ class Chat extends Component {
       }
     );
 
-    let groupId = "";
-    if (this.state.groupId) {
-      groupId = this.state.groupId;
+    let groupIdStr = "";
+    if (groupId) {
+      groupIdStr = groupId;
     }
 
-    fetch("http://localhost:5000/api/messages/" + groupId, {
+    fetch("http://localhost:5000/api/messages/" + groupIdStr, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

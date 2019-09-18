@@ -6,6 +6,6 @@ namespace WebChatBackend.Services.Contracts
 {
     public interface IGroupService
     {
-        Task<List<Group>> GetUserGroupsAsync(string userId);
+        Task<List<GroupWithUsers>> GetUserGroupsAsync(string userId);
     }
 }

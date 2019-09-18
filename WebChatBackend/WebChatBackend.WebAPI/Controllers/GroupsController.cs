@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebChatBackend.Data.Models;
+using WebChatBackend.Services;
 using WebChatBackend.Services.Contracts;
 
 namespace WebChatBackend.WebAPI.Controllers
@@ -18,11 +19,11 @@ namespace WebChatBackend.WebAPI.Controllers
         }
         
         // GET api/Groups/5
-        [HttpGet("{id}")]        
-        public async Task<ActionResult<List<Group>>> Get(string userId)
+        [HttpGet("{userId}")]        
+        public async Task<ActionResult<List<GroupWithUsers>>> Get(string userId)
         {           
-            List<Group> userGroups = await _groupService.GetUserGroupsAsync(userId);
+            List<GroupWithUsers> userGroups = await _groupService.GetUserGroupsAsync(userId);
             return userGroups;
-        }       
+        }
     }
 }
