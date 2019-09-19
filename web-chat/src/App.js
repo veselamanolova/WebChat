@@ -5,6 +5,7 @@ import Login from "./components/login";
 import Notfound from "./components/notfound";
 import Users from "./components/users";
 import Groups from "./components/groups";
+import CreateNewGroup from "./components/createNewGroup";
 
 class App extends Component {
 
@@ -40,21 +41,35 @@ class App extends Component {
       return (
         <Router>
           <div>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/users">Users</Link>
-              </li>
-              <li>
-                <Link to="/groups">Groups</Link>
-              </li>
-            </ul>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <a class="navbar-brand" href="#">Chat</a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                  <li class="nav-item active">
+                    <Link to="/" class="nav-link active">Home<span class="sr-only">(current)</span></Link>
+                  </li>
+                  <li class="nav-item">
+                    <Link to="/users" class="nav-link">Users</Link>
+                  </li >
+                  <li class="nav-item">
+                    <Link to="/groups" class=" nav-link">Groups</Link>
+                  </li>
+                  <li class="nav-item">
+                    <Link to="/newgroup" class="nav-link">New Group</Link>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+
             <Switch>
               <Route exact path="/" component={() => <Chat userData={this.state.userData} />} />
               <Route path="/users" component={() => <Users userData={this.state.userData} />} />
               <Route path="/groups" component={() => <Groups userData={this.state.userData} />} />
+              <Route path="/newgroup" component={() => <CreateNewGroup userData={this.state.userData} />} />
               <Route component={Notfound} />
             </Switch>
           </div>
