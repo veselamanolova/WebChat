@@ -14,7 +14,7 @@ namespace WebChatBackend.Services
         public bool IsPrivateChat { get; set; }
         public List<BasicUserInfo> UsersInfo { get; set; }
 
-        public GroupWithUsers() { }
+        public GroupWithUsers() { }        
 
         public GroupWithUsers(Group group, string currentUserId, string groupNameSeparator)
         {

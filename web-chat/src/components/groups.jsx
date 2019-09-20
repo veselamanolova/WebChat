@@ -1,16 +1,42 @@
 import React, { Component } from "react";
-import { Route, Link, BrowserRouter as Router, Switch } from 'react-router-dom'
+import { Route, Link, BrowserRouter as Router, Switch, withRouter } from 'react-router-dom';
 import Chat from "./chat";
+import { createBrowserHistory } from 'history';
 
 class Groups extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            groups: [],
-            groupId: null
-        };
+        // this.state = {
+        //     groups: [],
+        //     groupId: null,
+        //     name: "Public group",
+        //     // selectGroup: this.selectGroup(group)
+        // };
     }
+
+    state = {
+        groups: [],
+        publicGroup: {
+            groupId: null,
+            name: "Public group"
+        },
+        groupId: null,
+        name: "Public group",
+        // selectGroup: this.selectGroup(group)
+    };
+
+    selectGroup = (group) => {
+        console.log("State before" + this.state.groupId + this.state.name);
+        console.log("group selected" + group.id + group.name);
+        this.setState({
+            name: group.name,
+            groupId: group.id
+        });
+        console.log("State after" + this.state.groupId + this.state.name);
+    }
+
+
 
     componentDidMount() {
 
@@ -37,31 +63,43 @@ class Groups extends Component {
 
 
     render() {
-        const { groups } = this.state;
+        const { groups, name, groupId, publicGroup } = this.state;
         return (
-            <div>
-                <div class="row">
-                    <div class="col-2">
-                        <ul>
-                            {groups.map((group) => (
-                                <div key={group.id}>
+
+            < div >
+                <div className="row">
+                    <Router>
+                        <div className="col-2">
+                            <div fixed-top>
+                                <div className="lead font-weight-bold">Groups and Chats </div>
+                            </div>
+                            <ul>
+                                <div key={null} onClick={() => this.selectGroup(publicGroup)}>
                                     <p>
-                                        {group.name}
+                                        {<Link to={{ pathname: `/groups/` }}>{"Public group"}</Link>}
                                     </p>
                                 </div>
-                            ))}
-                        </ul>
-                    </div>
-                    <div class="col-10">
-                        <div>
-                            <Chat
-                                userData={this.props.userData}
-                                groupId={this.state.groupId}
-                            />
+                                {groups.map((group) => (
+
+                                    <div key={group.id} onClick={() => this.selectGroup(group)}>
+                                        <p>
+                                            {<Link to={{ pathname: `/groups/${group.id}` }}>{group.name}</Link>}
+                                        </p>
+                                    </div>
+                                ))}
+                            </ul>
                         </div>
-                    </div>
+                        <Switch>
+                            <Route exact path="/groups/" component={() => <Chat userData={this.props.userData}
+                                groupId={null}
+                                name={"Public group"} />} />
+                            <Route path="/groups/:groupId" component={() => <Chat userData={this.props.userData}
+                                groupId={this.state.groupId}
+                                name={this.state.name} />} />
+                        </Switch>
+                    </Router>
                 </div>
-            </div>
+            </div >
         );
     }
 }

@@ -45,14 +45,6 @@ class Users extends Component {
                         </div>
                     ))}
                 </ul>
-                {/* <br />
-                <input
-                    type="text"
-                    value={messageText}
-                    onChange={e => this.setState({ messageText: e.target.value })}
-                />
-
-                <button onClick={this.sendMessage}>Send</button> */}
             </div>
         );
     }

@@ -18,7 +18,7 @@ namespace WebChatBackend.Services
         }
 
         public async Task<List<GroupWithUsers>> GetUserGroupsAsync(string userId)
-        {
+        {  
             var result = await _context.Groups
                 .Include(g => g.UserGroups)
                 .ThenInclude(ug => ug.User)

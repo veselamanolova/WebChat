@@ -10,17 +10,28 @@ class Chat extends Component {
       isLoaded: false,
       messages: [],
       messageText: "",
-      name: null,
-      userId: "f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3",
+      userId: "",
       group: null,
       groupId: null,
+      name: "Public group",
       hubConnection: null,
     };
   }
 
   componentDidMount() {
 
-    const { userId, userName, token, groupId } = this.props.userData;
+    const { userId, userName, token } = this.props.userData;
+    if (this.props.groupId) {
+      this.setState({ groupId: this.props.groupId });
+    }
+    debugger;
+    if (this.props.name) {
+      this.setState({ name: this.props.name });
+    }
+
+    const { name, groupId } = this.props;
+
+    console.log(name + " " + groupId);
 
     let hubConnection = new signalR.HubConnectionBuilder()
       .withUrl("http://localhost:5012/chatHub")
@@ -33,8 +44,8 @@ class Chat extends Component {
           .start()
           .then(() => {
             console.info("SignalR connected");
-            if (this.state.groupId != null && this.state.groupId > 0) {
-              this.state.hubConnection.invoke("JoinToGroup", this.state.groupId)
+            if (this.props.groupId != null && this.props.groupId > 0) {
+              this.state.hubConnection.invoke("JoinToGroup", this.props.groupId)
                 .catch(function (err) {
                   return console.error(err.toString());
                 });
@@ -48,7 +59,6 @@ class Chat extends Component {
             });
 
         if (groupId != null && groupId > 0) {
-
           this.state.hubConnection.on("SendMessageToGroup", (name, message, groupId, receivedMessage) => {
             const text = `${name}: ${receivedMessage}`;
             const messages = this.state.messages.concat([text]);
@@ -102,10 +112,11 @@ class Chat extends Component {
 
   componentWillUnmount() {
     this.state.hubConnection.stop();
+    this.state.messages = [];
   }
 
   sendMessage = () => {
-    if (this.state.groupId == null) {
+    if (this.props.groupId == null) {
       this.state.hubConnection
         .invoke("SendMessageToGlobalGroup", this.state.messageText)
         .catch(err => console.error(err));
@@ -113,15 +124,25 @@ class Chat extends Component {
       this.setState({ messageText: '' });
     } else {
       this.state.hubConnection
-        .invoke("SendMessageToGroup", this.state.messageText, this.state.groupId)
+        .invoke("SendMessageToGroup", this.state.messageText, this.props.groupId)
         .catch(err => console.error(err));
 
       this.setState({ messageText: '' });
     }
   };
 
+
+
   render() {
-    const { error, isLoaded, messages, messageText } = this.state;
+    const { error, isLoaded, messages, messageText, groupId, name } = this.state;
+    let divStyle = {
+      overflowY: 'scroll',
+      height: '80vh',
+      border: '1px solid lightgrey',
+      float: 'left',
+      position: 'relative'
+    };
+
     if (error) {
       return <div>Error: {error.message}</div>;
     } else if (!isLoaded) {
@@ -129,26 +150,35 @@ class Chat extends Component {
     } else if (messages.lenght === 0) return <p> No messages</p>;
     else {
       return (
-        <div>
-          <ul>
-            {messages.map((message, index) => (
-              <div key={index}>
-                <p>
-                  User:{message.userId}: {message.text}{" "}
-                </p>
-                <p>{message.date}</p>
-              </div>
-            ))}
-          </ul>
-          <br />
-          <input
-            type="text"
-            value={messageText}
-            onChange={e => this.setState({ messageText: e.target.value })}
-          />
+        <div className="container" >
+          <div fixed-top>
+            <div className="lead font-weight-bold">{groupId}{name} </div>
+          </div>
+          <div className="chat col-8" style={divStyle} >
 
-          <button onClick={this.sendMessage}>Send</button>
-        </div>
+            <ul>
+              {messages.map((message, index) => (
+                <div key={index}>
+                  <p>
+                    User:{message.userId}: {message.text}{" "}
+                  </p>
+                  <p>{message.date}</p>
+                </div>
+              ))}
+            </ul>
+            <br />
+            <input
+              type="text"
+              value={messageText}
+              onChange={e => this.setState({ messageText: e.target.value })}
+            />
+            <button onClick={this.sendMessage}>Send</button>
+          </div>
+          <div className="col-4">
+
+          </div>
+
+        </ div>
       );
     }
   }
