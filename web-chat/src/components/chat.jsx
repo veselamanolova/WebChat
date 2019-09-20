@@ -152,17 +152,17 @@ class Chat extends Component {
       return (
         <div className="container" >
           <div fixed-top>
-            <div className="lead font-weight-bold">{groupId}{name} </div>
+            <div className="lead font-weight-bold">{name} </div>
           </div>
-          <div className="chat col-8" style={divStyle} >
+          <div className="chat xs-col-10 md-col-10" style={divStyle} >
 
             <ul>
               {messages.map((message, index) => (
                 <div key={index}>
                   <p>
-                    User:{message.userId}: {message.text}{" "}
+                    {message.userName}: {message.text}{" "}
                   </p>
-                  <p>{message.date}</p>
+                  <p>{(message.date)}</p>
                 </div>
               ))}
             </ul>
@@ -174,9 +174,9 @@ class Chat extends Component {
             />
             <button onClick={this.sendMessage}>Send</button>
           </div>
-          <div className="col-4">
+          {/* <div className="chat xs-col-1 md-col-1">
 
-          </div>
+          </div> */}
 
         </ div>
       );

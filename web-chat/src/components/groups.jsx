@@ -69,16 +69,16 @@ class Groups extends Component {
             < div >
                 <div className="row">
                     <Router>
-                        <div className="col-2">
+                        <div className="xs-col-2 md-col-2">
                             <div fixed-top>
                                 <div className="lead font-weight-bold">Groups and Chats </div>
                             </div>
                             <ul>
-                                <div key={null} onClick={() => this.selectGroup(publicGroup)}>
+                                {/* <div key={null} onClick={() => this.selectGroup(publicGroup)}>
                                     <p>
                                         {<Link to={{ pathname: `/groups/` }}>{"Public group"}</Link>}
                                     </p>
-                                </div>
+                                </div> */}
                                 {groups.map((group) => (
 
                                     <div key={group.id} onClick={() => this.selectGroup(group)}>

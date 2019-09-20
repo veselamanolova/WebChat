@@ -18,6 +18,7 @@ class Login extends React.Component {
     }
 
     sendLoginCredentials = () => {
+        debugger;
         console.log(this.state.email + " " + this.state.password)
 
         fetch('http://localhost:5000/api/user/login', {
@@ -28,9 +29,13 @@ class Login extends React.Component {
                 password: this.state.password
             }),
         })
-            .then(res => res.json())
+            .then(res => {
+                return res.json();
+            }
+            )
             .then(result => {
-                console.log(result);
+                console.log(`result: ${result}`);
+
                 localStorage.setItem('logedInUserData', JSON.stringify(result));
                 this.setState({
                     userId: result.userId,
@@ -61,7 +66,9 @@ class Login extends React.Component {
                             onChange={e => this.setState({ password: e.target.value })} />
                     </label>
                 </div>
-                <button onClick={this.sendLoginCredentials}>Login</button>
+                <button onClick={
+                    this.sendLoginCredentials
+                }>Login</button>
             </div>
         );
     }

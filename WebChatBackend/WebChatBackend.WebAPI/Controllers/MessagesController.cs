@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Services.Contracts;
+using WebChatBackend.Services;
 
 namespace WebChatBackend.WebAPI.Controllers
 {
@@ -23,9 +24,9 @@ namespace WebChatBackend.WebAPI.Controllers
 
         // GET api/messages
         [HttpGet]
-        public async Task<ActionResult<List<Message>>> Get()
+        public async Task<ActionResult<List<MessageWithUserData>>> Get()
         {
-            List<Message> publicMessages = await _messageService.GetAllGlobalGroupMessagesAsync();
+            List<MessageWithUserData> publicMessages = await _messageService.GetAllGlobalGroupMessagesAsync();
             return publicMessages;
         }
 
@@ -33,10 +34,10 @@ namespace WebChatBackend.WebAPI.Controllers
 
         [HttpGet("{groupId}")]
         [Authorize]
-        public async Task<ActionResult<List<Message>>> Get(int groupId)
+        public async Task<ActionResult<List<MessageWithUserData>>> Get(int groupId)
         {
             string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value; //"f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3"
-            List<Message> groupMessages = await _messageService.GetGroupMessagesAsync(groupId, currentUserId); 
+            List<MessageWithUserData> groupMessages = await _messageService.GetGroupMessagesAsync(groupId, currentUserId); 
             return groupMessages;
         }
     }

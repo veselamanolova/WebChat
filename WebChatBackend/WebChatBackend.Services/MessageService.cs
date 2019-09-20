@@ -7,6 +7,7 @@ using WebChatBackend.Data;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Services.Contracts;
 
+
 namespace WebChatBackend.Services
 {
     public class MessageService : IMessageService
@@ -18,47 +19,57 @@ namespace WebChatBackend.Services
             _context = context;
         }
 
-        public async Task<List<Message>> GetAllGlobalGroupMessagesAsync() =>
-            await _context.Mesages
-            .Where(m => m.GroupId == null)
+        public async Task<List<MessageWithUserData>> GetAllGlobalGroupMessagesAsync()
+        {
+            return  await _context.Mesages
+            .Where(m => m.GroupId == 1)
+            .Include(m =>m.Group)
+            .ThenInclude(g => g.UserGroups)            
+            .ThenInclude(ug => ug.User)
+             .Select(m => new MessageWithUserData(m))
             .ToListAsync();
+        }
 
-        public async Task<List<Message>> GetGroupMessagesAsync(int groupId, string currentUserId)
+        public async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int groupId, string currentUserId)
         {
             await VerifyUserBelongsToGroupAsync(currentUserId, groupId);
 
             return await _context.Mesages
              .Where(m => m.GroupId == groupId)
-             .ToListAsync();
-        }      
+             .Include(m => m.Group)
+            .ThenInclude(g => g.UserGroups)
+            .ThenInclude(ug => ug.User)
+            .Select(m => new MessageWithUserData (m))
+            .ToListAsync();
+        }  
 
-        public async Task<Message> SaveGlobalGroupMessageAsync(string userId, string text)
+        public async Task<MessageWithUserData> SaveGlobalGroupMessageAsync(string userId, string text)
         {
             var message = new Message()
             {
                 GroupId = null,
-                UserId = userId,
+                UserId = userId,                
                 Text = text,
                 Date = DateTime.UtcNow
             };
             await _context.Mesages.AddAsync(message);
             await _context.SaveChangesAsync();
-            return message;
+            return new MessageWithUserData( message);
         }
 
-        public async Task<Message> SaveGlobalGroupMessageAsync(string userId, string text, int groupId)
+        public async Task<MessageWithUserData> SaveGlobalGroupMessageAsync(string userId, string text, int groupId)
         {
             await VerifyUserBelongsToGroupAsync(userId, groupId);
             var message = new Message()
             {
                 GroupId = groupId,
-                UserId = userId,
+                UserId = userId,              
                 Text = text,
                 Date = DateTime.UtcNow
             };
-            await _context.Mesages.AddAsync(message);
+            await _context.Mesages.AddAsync(message); 
             await _context.SaveChangesAsync();
-            return message;
+            return new MessageWithUserData(message);
         }
 
         private async Task VerifyUserBelongsToGroupAsync(string userId, int groupId)
