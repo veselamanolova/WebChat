@@ -55,6 +55,9 @@ class App extends Component {
                     <Link to="/newgroup" className="nav-link">New Group</Link>
                   </li>
                 </ul>
+                <span class="navbar-text">
+                  Hi, {this.state.userData.userName}
+                </span>
               </div>
             </nav>
 

@@ -24,7 +24,6 @@ class Chat extends Component {
     if (this.props.groupId) {
       this.setState({ groupId: this.props.groupId });
     }
-    debugger;
     if (this.props.name) {
       this.setState({ name: this.props.name });
     }
@@ -134,13 +133,12 @@ class Chat extends Component {
 
 
   render() {
+    const { userId, userName, token } = this.props.userData;
     const { error, isLoaded, messages, messageText, groupId, name } = this.state;
     let divStyle = {
       overflowY: 'scroll',
       height: '80vh',
-      border: '1px solid lightgrey',
-      float: 'left',
-      position: 'relative'
+      border: '1px solid lightgrey'
     };
 
     if (error) {
@@ -151,21 +149,16 @@ class Chat extends Component {
     else {
       return (
         <div className="container" >
-          <div fixed-top>
-            <div className="lead font-weight-bold">{name} </div>
-          </div>
-          <div className="chat xs-col-10 md-col-10" style={divStyle} >
-
-            <ul>
-              {messages.map((message, index) => (
-                <div key={index}>
-                  <p>
-                    {message.userName}: {message.text}{" "}
-                  </p>
-                  <p>{(message.date)}</p>
+          <h5>{name}</h5>
+          <div style={divStyle}>
+            {messages.map((message, index) => (
+              <div key={index}>
+                {message.userId !== userId ? message.userName : ""}
+                <div class={"alert alert-" + (message.userId === userId ? "primary" : "secondary")}>
+                  {message.text} <span class="badge badge-info">{new Date(message.date).toLocaleTimeString()}</span>
                 </div>
-              ))}
-            </ul>
+              </div>
+            ))}
             <br />
             <input
               type="text"

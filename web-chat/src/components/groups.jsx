@@ -23,17 +23,15 @@ class Groups extends Component {
         },
         groupId: null,
         name: "Public group",
-        // selectGroup: this.selectGroup(group)
+        newGroupName: ""
     };
 
     selectGroup = (group) => {
-        console.log("State before" + this.state.groupId + this.state.name);
-        console.log("group selected" + group.id + group.name);
         this.setState({
             name: group.name,
-            groupId: group.id
+            groupId: group.id,
+
         });
-        console.log("State after" + this.state.groupId + this.state.name);
     }
 
 
@@ -43,7 +41,7 @@ class Groups extends Component {
         const { userId, userName, token } = this.props.userData;
         console.log(userId);
 
-        fetch(`http://localhost:5000/api/groups/${userId}`, {
+        fetch(`http://localhost:5000/api/groups`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -61,43 +59,100 @@ class Groups extends Component {
             );
     }
 
+    createGroup = () => {
+
+        const { token } = this.props.userData;
+
+        fetch('http://localhost:5000/api/groups/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                name: this.state.newGroupName
+            }),
+        })
+            .then(res => {
+                return res.json();
+            })
+            .then(result => {
+                console.log(`result: ${result}`);
+
+
+                this.setState({
+                    groups: [result, ...this.state.groups]
+                }, () => {
+                    this.selectGroup(result);
+                });
+
+            });
+        this.state.newGroupName = '';
+    }
 
     render() {
-        const { groups, name, groupId, publicGroup } = this.state;
+        const { groups, name, groupId, publicGroup, newGroupName } = this.state;
         return (
 
             < div >
                 <div className="row">
-                    <Router>
-                        <div className="xs-col-2 md-col-2">
-                            <div fixed-top>
-                                <div className="lead font-weight-bold">Groups and Chats </div>
+                    <div className="col-3">
+                        <div className="row">
+                            <div className="col-9"><h5>Groups and Chats</h5></div>
+                            <div className="col-3">
+                                <button type="button" className="btn btn-secondary btn-sm float-right"
+                                    data-toggle="modal" data-target="#createNewGroup" title="Create new group">
+                                    +
+                                </button>
                             </div>
-                            <ul>
-                                {/* <div key={null} onClick={() => this.selectGroup(publicGroup)}>
-                                    <p>
-                                        {<Link to={{ pathname: `/groups/` }}>{"Public group"}</Link>}
-                                    </p>
-                                </div> */}
-                                {groups.map((group) => (
-
-                                    <div key={group.id} onClick={() => this.selectGroup(group)}>
-                                        <p>
-                                            {<Link to={{ pathname: `/groups/${group.id}` }}>{group.name}</Link>}
-                                        </p>
-                                    </div>
-                                ))}
-                            </ul>
                         </div>
-                        <Switch>
-                            <Route exact path="/groups/" component={() => <Chat userData={this.props.userData}
-                                groupId={null}
-                                name={"Public group"} />} />
-                            <Route path="/groups/:groupId" component={() => <Chat userData={this.props.userData}
-                                groupId={this.state.groupId}
-                                name={this.state.name} />} />
-                        </Switch>
-                    </Router>
+
+                        <div class="modal fade" id="createNewGroup" tabindex="-1" role="dialog" aria-labelledby="createNewGroupLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="createNewGroupLabel">Create Group</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="text" placeholder="Group name" style={{ width: "100%" }}
+                                            value={newGroupName} onChange={e => this.setState({ newGroupName: e.target.value })}>
+                                        </input>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                            onClick={
+                                                this.createGroup
+                                            }>Create</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="list-group">
+                            <a href="#" class={"list-group-item list-group-item-action" + (!this.state.groupId ? " active" : "")}
+                                onClick={() => this.selectGroup(publicGroup)}>
+                                Public group
+                            </a>
+                            {groups.map((group) => (
+
+                                <a href="#" class={"list-group-item list-group-item-action" + (this.state.groupId === group.id ? " active" : "")}
+                                    key={group.id} onClick={() => this.selectGroup(group)}>
+                                    {group.name}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="col-9">
+                        <Chat key={this.state.groupId}
+                            userData={this.props.userData}
+                            groupId={this.state.groupId}
+                            name={this.state.name}>}>
+                        </Chat>
+                    </div>
                 </div>
             </div >
         );

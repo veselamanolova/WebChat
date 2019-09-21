@@ -16,7 +16,7 @@ namespace WebChatBackend.Services
 
         public GroupWithUsers() { }        
 
-        public GroupWithUsers(Group group, string currentUserId, string groupNameSeparator)
+        public GroupWithUsers(Group group, string currentUserId = null, string groupNameSeparator = null)
         {
             Id = group.Id;
             Name = string.IsNullOrEmpty(group.Name) ?

@@ -12,6 +12,6 @@ namespace WebChatBackend.Services.Contracts
 
         Task<MessageWithUserData> SaveGlobalGroupMessageAsync(string userId, string text);
 
-        Task<MessageWithUserData> SaveGlobalGroupMessageAsync(string userId, string text, int groupId);
+        Task<MessageWithUserData> SaveGroupMessageAsync(string userId, string text, int groupId);
     }
 }

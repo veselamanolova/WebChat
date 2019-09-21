@@ -6,21 +6,82 @@ class CreateNewGroup extends React.Component {
         var localStrUserData = localStorage.getItem('logedInUserData');
 
         this.state = {
+            users: []
         };
     }
 
     componentDidMount() {
+
+        const { userName, token } = this.props.userData;
+
+        fetch("http://localhost:5000/api/user/", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + token
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                console.log(result);
+                this.setState({
+                    // isLoaded: true,
+                    users: result
+                });
+            }
+            );
     }
 
 
     render() {
-        const { email, password } = this.state;
+        const { users } = this.state;
         return (
-            <select class="custom-select" data-live-search="true" >
-                <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
-                <option data-tokens="mustard">Burger, Shake and a Smile</option>
-                <option data-tokens="frosting">Sugar, Spice and all things nice</option>
-            </select>
+            <div></div>
+
+            //     <div>
+            //         <ul>
+            //             {users.map((user) => (
+            //                 <div key={user.id} onClick={() => this.selectUser(user)}>
+            //                     <p>
+            //                         {user.userName}
+            //                     </p>
+            //                 </div>
+            //             ))}
+            //         </ul>
+            //     </div>
+
+
+            // // <div className="container" >
+            // //     <div className="form-check">
+            // //         <input className="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="option2" />
+            // //         <label className="form-check-label" for="gridRadios2">
+            // //             Second radio
+            // //         </label>
+            // //     </div>
+
+            // // </div>
+
+
+            // <div className="container">
+            //     <h2>Save the multiple checkbox values in React js</h2>
+            //     <hr />
+            //     <form onSubmit={this.onSubmit}>
+            //     {users.map((user) => (
+            //         <div className="form-check">
+            //             <label className="form-check-label">
+            //                 <input type="checkbox"
+            //                     checked={this.state.isMJ}
+            //                     onChange={this.toggleSelected(user)}
+            //                     className="form-check-input"
+            //                 />
+            //                 MJ
+            //              </label>
+            //         </div>
+            //         ))}
+            //     </form>
+            // </div>
+
+
         );
     }
 }

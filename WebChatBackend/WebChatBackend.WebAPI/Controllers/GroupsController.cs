@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Services;
@@ -9,6 +12,7 @@ namespace WebChatBackend.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GroupsController : ControllerBase
     {
         private readonly IGroupService _groupService;
@@ -19,11 +23,24 @@ namespace WebChatBackend.WebAPI.Controllers
         }
         
         // GET api/Groups/5
-        [HttpGet("{userId}")]        
-        public async Task<ActionResult<List<GroupWithUsers>>> Get(string userId)
-        {           
-            List<GroupWithUsers> userGroups = await _groupService.GetUserGroupsAsync(userId);
+        [HttpGet]        
+        public async Task<ActionResult<List<GroupWithUsers>>> Get()
+        {
+            
+            string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            List<GroupWithUsers> userGroups = await _groupService.GetUserGroupsAsync(currentUserId);
             return userGroups;
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult<GroupWithUsers>> Post(CreateGroupRequest createGroupRequest)
+        {
+            string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            createGroupRequest.UserIds.Add(currentUserId); 
+
+            GroupWithUsers newGroup = await _groupService.CreateNewGroupAsync(createGroupRequest);
+            return newGroup;
         }
     }
 }

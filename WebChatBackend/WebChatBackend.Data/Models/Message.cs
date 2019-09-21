@@ -13,13 +13,6 @@ namespace WebChatBackend.Data.Models
         public string Text { get; set; }
         public DateTime Date { get; set; }        
         public Group Group { get; set; }
-
-        public string  GetUserName()
-        {
-            return this?.Group.
-                UserGroups.
-                FirstOrDefault(ug => ug.GroupId == this.GroupId).
-                User.UserName ?? null;
-        }
+        public User User { get; set; }       
     }
 }

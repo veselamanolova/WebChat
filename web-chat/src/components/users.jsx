@@ -38,7 +38,7 @@ class Users extends Component {
             <div>
                 <ul>
                     {users.map((user) => (
-                        <div key={user.id}>
+                        <div key={user.id} onClick={() => this.selectUser(user)}>
                             <p>
                                 {user.userName}
                             </p>
@@ -49,5 +49,6 @@ class Users extends Component {
         );
     }
 }
+
 
 export default Users;

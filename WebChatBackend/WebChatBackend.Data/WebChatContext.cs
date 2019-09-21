@@ -4,7 +4,7 @@ using WebChatBackend.Data.Models;
 
 namespace WebChatBackend.Data
 {
-    //public class WebChatContext : DbContext
+   
     public class WebChatContext : IdentityDbContext<User>
     {
         public WebChatContext(DbContextOptions<WebChatContext> options)
@@ -12,10 +12,9 @@ namespace WebChatBackend.Data
         {
         }
 
-        //public DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
-        public DbSet<Message> Mesages { get; set; }
-        public DbSet<UserGroup> UserGroup { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<UserGroup> UserGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
