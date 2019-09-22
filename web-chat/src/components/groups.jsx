@@ -141,7 +141,7 @@ class Groups extends Component {
                                 <a href="#" class={"list-group-item list-group-item-action" + (!this.state.groupId ? " active" : "")}
                                     onClick={() => this.selectGroup(publicGroup)}>
                                     Public group
-                            </a>
+                                 </a>
                                 {groups.map((group) => (
 
                                     <a href="#" class={"list-group-item list-group-item-action" + (this.state.groupId === group.id ? " active" : "")}

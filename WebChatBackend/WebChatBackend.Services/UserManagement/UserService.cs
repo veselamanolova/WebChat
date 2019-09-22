@@ -30,12 +30,14 @@ namespace WebChatBackend.Services.UserManagement
             _configuration = configuration;
         }
 
-        public async Task<List<BasicUserInfo>> GetAllUsers() =>
-           await _context.Users.Select(u => new BasicUserInfo
+        public async Task<List<BasicUserInfo>> GetAllUsers(string searchText) =>
+           await _context.Users
+            .Where(u => string.IsNullOrEmpty(searchText)|| u.UserName.Contains(searchText))
+            .Select(u => new BasicUserInfo
            {
                Id = u.Id,
                UserName = u.UserName
-           })
+    })
             .OrderBy(u => u.UserName)
             .ToListAsync();
 

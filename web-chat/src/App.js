@@ -47,6 +47,9 @@ class App extends Component {
 
             <nav class="navbar navbar-light bg-light">
               <a class="navbar-brand">WebChat</a>
+              <div className="nav-item">
+                <Link to="/users" className="nav-link">Users</Link>
+              </div >
               <div>
                 <form class="form-inline">
                   {/* <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />

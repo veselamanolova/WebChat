@@ -57,11 +57,12 @@ namespace WebChatBackend.WebAPI.Controllers
             }   
         }
 
+        // GET api/users?search=...
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<BasicUserInfo>>> Get()
+        public async Task<ActionResult<List<BasicUserInfo>>> Get(string search)
         {
-            return await _userService.GetAllUsers();            
+            return await _userService.GetAllUsers(search);            
         }
     }
 }
