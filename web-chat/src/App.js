@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Link, BrowserRouter as Router, Switch } from 'react-router-dom'
+import { Route, Link, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom'
 import Chat from "./components/chat";
 import Login from "./components/login";
 import Notfound from "./components/notfound";
@@ -26,6 +26,17 @@ class App extends Component {
       });
     }
   }
+
+  handleLogout = () => {
+
+    localStorage.removeItem('logedInUserData');
+    this.setState({
+      userData: {}
+    });
+    // this.context.router.push('/'); 
+    // return <Redirect push to="/" />;
+    // window.location.reload();
+  };
 
   render() {
 
@@ -55,9 +66,19 @@ class App extends Component {
                     <Link to="/newgroup" className="nav-link">New Group</Link>
                   </li>
                 </ul>
-                <span class="navbar-text">
-                  Hi, {this.state.userData.userName}
-                </span>
+
+                <li class="nav navbar-nav navbar-right">
+                  <div className="nav-link">
+                    Hi, {this.state.userData.userName}
+                  </div>
+                </li>
+                <li class="nav navbar-nav navbar-right mr-auto">
+                  <div className="nav-link" onClick={
+                    this.handleLogout
+                  } >Logout</div>
+                </li>
+
+
               </div>
             </nav>
 
