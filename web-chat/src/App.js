@@ -5,7 +5,6 @@ import Login from "./components/login";
 import Notfound from "./components/notfound";
 import Users from "./components/users";
 import Groups from "./components/groups";
-import CreateNewGroup from "./components/createNewGroup";
 
 class App extends Component {
 

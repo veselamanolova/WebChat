@@ -16,7 +16,8 @@ class Chat extends Component {
       name: "Public group",
       hubConnection: null,
       previousMessageUserId: "",
-      isPreviousMessageFromTheSameUser: false
+      isPreviousMessageFromTheSameUser: false,
+      searchText: ""
     };
   }
 
@@ -89,16 +90,25 @@ class Chat extends Component {
       }
     );
 
+    this.loadMessages();
+  }
+
+  loadMessages = () => {
     let groupIdStr = "";
-    if (groupId) {
-      groupIdStr = groupId;
+    if (this.props.groupId) {
+      groupIdStr = this.props.groupId;
     }
 
-    fetch("http://localhost:5000/api/messages/" + groupIdStr, {
+    let searchTextStr = "";
+    if (this.state.searchText) {
+      searchTextStr = "?search=" + this.state.searchText;
+    }
+
+    fetch("http://localhost:5000/api/messages/" + groupIdStr + searchTextStr, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": "Bearer " + token
+        "Authorization": "Bearer " + this.props.userData.token
       }
     })
       .then(res => res.json())
@@ -107,8 +117,7 @@ class Chat extends Component {
           isLoaded: true,
           messages: result
         });
-      }
-      );
+      });
   }
 
   componentWillUnmount() {
@@ -132,11 +141,9 @@ class Chat extends Component {
     }
   };
 
-
-
   render() {
     const { userId, userName, token } = this.props.userData;
-    const { error, isLoaded, messages, messageText, groupId, name } = this.state;
+    const { error, isLoaded, messages, messageText, groupId, name, searchText } = this.state;
     let { previousMessageUserId, isPreviousMessageFromTheSameUser } = this.state;
     let chatDivStyle = {
       overflowY: 'scroll',
@@ -157,7 +164,18 @@ class Chat extends Component {
     else {
       return (
         <div className="container" >
-          <h5>{name}</h5>
+          <div>
+            <div className="d-flex">
+              <div class="flex-grow-1"><h5>{name}</h5></div>
+              <div class="form-inline">
+                <input className="form-control form-control-sm" type="text" placeholder="Search messages"
+                  value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
+                <button className="btn btn-sm btn-outline-secondary ml-1" onClick={this.loadMessages} title="Search">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
           <div style={chatDivStyle}>
             {messages.map((message, index) => {
               const isCurrentUserMessage = message.userId === userId;

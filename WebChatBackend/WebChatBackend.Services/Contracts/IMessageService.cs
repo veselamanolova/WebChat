@@ -6,9 +6,9 @@ namespace WebChatBackend.Services.Contracts
 {
     public interface IMessageService
     {
-        Task<List<MessageWithUserData>> GetAllGlobalGroupMessagesAsync();
+        Task<List<MessageWithUserData>> GetAllGlobalGroupMessagesAsync(string searchText);
 
-        Task<List<MessageWithUserData>> GetGroupMessagesAsync(int groupId, string currentUserId);
+        Task<List<MessageWithUserData>> GetGroupMessagesAsync(int groupId, string currentUserId, string searchText);
 
         Task<MessageWithUserData> SaveGlobalGroupMessageAsync(string userId, string text);
 

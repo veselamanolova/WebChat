@@ -101,10 +101,14 @@ class Groups extends Component {
                             <div className="d-flex">
                                 <div className="flex-grow-1"><h5>Chats</h5></div>
                                 <div>
-                                    <button type="button" className="btn btn-secondary btn-sm float-right"
+                                    <button type="button" className="btn btn-outline-secondary btn-sm mr-1"
+                                        data-toggle="modal" data-target="#createNewGroup" title="Create new individual chat">
+                                        <i class="fas fa-user-friends"></i>
+                                    </button>
+                                    <button type="button" className="btn btn-outline-secondary btn-sm float-right"
                                         data-toggle="modal" data-target="#createNewGroup" title="Create new group">
-                                        +
-                                </button>
+                                        <i class="fas fa-users"></i>
+                                    </button>
                                 </div>
                             </div>
 

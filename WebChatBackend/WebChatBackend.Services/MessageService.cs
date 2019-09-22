@@ -19,22 +19,22 @@ namespace WebChatBackend.Services
             _context = context;
         }
 
-        public async Task<List<MessageWithUserData>> GetAllGlobalGroupMessagesAsync()
+        public async Task<List<MessageWithUserData>> GetAllGlobalGroupMessagesAsync(string searchText)
         {
-            return await GetGroupMessagesAsync(null);
+            return await GetGroupMessagesAsync(null, searchText);
         }
 
-        public async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int groupId, string currentUserId)
+        public async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int groupId, string currentUserId, string searchText)
         {
             await VerifyUserBelongsToGroupAsync(currentUserId, groupId);
 
-            return await GetGroupMessagesAsync(groupId);
+            return await GetGroupMessagesAsync(groupId, searchText);
         }
 
-        private async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int? groupId)
+        private async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int? groupId, string searchText)
         {
             return await _context.Messages
-             .Where(m => m.GroupId == groupId)
+             .Where(m => m.GroupId == groupId && (string.IsNullOrEmpty(searchText) || m.Text.Contains(searchText)))
              .Include(m => m.User)
             .Select(m => new MessageWithUserData(m))
             .ToListAsync();
