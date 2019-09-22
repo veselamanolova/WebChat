@@ -95,55 +95,57 @@ class Groups extends Component {
         return (
 
             < div >
-                <div className="row">
+                <div className="row no-gutters">
                     <div className="col-3">
-                        <div className="row">
-                            <div className="col-9"><h5>Groups and Chats</h5></div>
-                            <div className="col-3">
-                                <button type="button" className="btn btn-secondary btn-sm float-right"
-                                    data-toggle="modal" data-target="#createNewGroup" title="Create new group">
-                                    +
+                        <div className="container">
+                            <div className="d-flex">
+                                <div className="flex-grow-1"><h5>Chats</h5></div>
+                                <div>
+                                    <button type="button" className="btn btn-secondary btn-sm float-right"
+                                        data-toggle="modal" data-target="#createNewGroup" title="Create new group">
+                                        +
                                 </button>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="modal fade" id="createNewGroup" tabindex="-1" role="dialog" aria-labelledby="createNewGroupLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="createNewGroupLabel">Create Group</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="text" placeholder="Group name" style={{ width: "100%" }}
-                                            value={newGroupName} onChange={e => this.setState({ newGroupName: e.target.value })}>
-                                        </input>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                            onClick={
-                                                this.createGroup
-                                            }>Create</button>
+                            <div class="modal fade" id="createNewGroup" tabindex="-1" role="dialog" aria-labelledby="createNewGroupLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="createNewGroupLabel">Create Group</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="text" placeholder="Group name" style={{ width: "100%" }}
+                                                value={newGroupName} onChange={e => this.setState({ newGroupName: e.target.value })}>
+                                            </input>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                                onClick={
+                                                    this.createGroup
+                                                }>Create</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="list-group">
-                            <a href="#" class={"list-group-item list-group-item-action" + (!this.state.groupId ? " active" : "")}
-                                onClick={() => this.selectGroup(publicGroup)}>
-                                Public group
+                            <div class="list-group" style={{ "height": "calc(100vh - 88px)", "overflow-y": "auto" }}>
+                                <a href="#" class={"list-group-item list-group-item-action" + (!this.state.groupId ? " active" : "")}
+                                    onClick={() => this.selectGroup(publicGroup)}>
+                                    Public group
                             </a>
-                            {groups.map((group) => (
+                                {groups.map((group) => (
 
-                                <a href="#" class={"list-group-item list-group-item-action" + (this.state.groupId === group.id ? " active" : "")}
-                                    key={group.id} onClick={() => this.selectGroup(group)}>
-                                    {group.name}
-                                </a>
-                            ))}
+                                    <a href="#" class={"list-group-item list-group-item-action" + (this.state.groupId === group.id ? " active" : "")}
+                                        key={group.id} onClick={() => this.selectGroup(group)}>
+                                        {group.name}
+                                    </a>
+                                ))}
+                            </div>
                         </div>
                     </div>
                     <div className="col-9">

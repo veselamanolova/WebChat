@@ -15,6 +15,8 @@ class Chat extends Component {
       groupId: null,
       name: "Public group",
       hubConnection: null,
+      previousMessageUserId: "",
+      isPreviousMessageFromTheSameUser: false
     };
   }
 
@@ -135,11 +137,17 @@ class Chat extends Component {
   render() {
     const { userId, userName, token } = this.props.userData;
     const { error, isLoaded, messages, messageText, groupId, name } = this.state;
-    let divStyle = {
+    let { previousMessageUserId, isPreviousMessageFromTheSameUser } = this.state;
+    let chatDivStyle = {
       overflowY: 'scroll',
-      height: '80vh',
+      height: 'calc(100vh - 142px)',
       border: '1px solid lightgrey'
     };
+    let sendMessageDivStyle = {
+      height: '10vh',
+      // border: '1px solid lightgrey'
+    };
+
 
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -150,28 +158,36 @@ class Chat extends Component {
       return (
         <div className="container" >
           <h5>{name}</h5>
-          <div style={divStyle}>
-            {messages.map((message, index) => (
-              <div key={index}>
-                {message.userId !== userId ? message.userName : ""}
-                <div class={"alert alert-" + (message.userId === userId ? "primary" : "secondary")}>
+          <div style={chatDivStyle}>
+            {messages.map((message, index) => {
+              const isCurrentUserMessage = message.userId === userId;
+              isPreviousMessageFromTheSameUser = (previousMessageUserId === message.userId);
+              previousMessageUserId = message.userId
+
+              return <div key={index} style={{ ["margin-" + (isCurrentUserMessage ? "left" : "right")]: "25%" }} >
+                {
+                  (isPreviousMessageFromTheSameUser || isCurrentUserMessage) ? "" : message.userName
+                }
+
+                < div class={"alert alert-" + (isCurrentUserMessage ? "primary" : "secondary")}>
                   {message.text} <span class="badge badge-info">{new Date(message.date).toLocaleTimeString()}</span>
                 </div>
               </div>
-            ))}
-            <br />
-            <input
-              type="text"
-              value={messageText}
-              onChange={e => this.setState({ messageText: e.target.value })}
-            />
-            <button onClick={this.sendMessage}>Send</button>
+            }
+
+            )}
           </div>
-          {/* <div className="chat xs-col-1 md-col-1">
 
-          </div> */}
-
-        </ div>
+          <div class="d-flex">
+            <div class="p-2 flex-grow-1">
+              <input className="form-control" type="text" placeholder="Type message here"
+                value={messageText} onChange={e => this.setState({ messageText: e.target.value })} />
+            </div>
+            <div class="p-2 bd-highlight">
+              <button className="btn btn-primary" onClick={this.sendMessage}>Send</button>
+            </div>
+          </div>
+        </div>
       );
     }
   }

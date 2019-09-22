@@ -45,7 +45,20 @@ class App extends Component {
       return (
         <Router>
           <div>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+
+            <nav class="navbar navbar-light bg-light">
+              <a class="navbar-brand">WebChat</a>
+              <div>
+                <form class="form-inline">
+                  {/* <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> */}
+                  <div className="nav-link">Hi, {this.state.userData.userName}</div>
+                  <a className="nav-link" href="#" onClick={this.handleLogout} >Logout</a>
+                </form>
+              </div>
+            </nav>
+
+            {/* <nav className="navbar navbar-expand-lg navbar-light bg-light">
               <a className="navbar-brand" href="#">Chat</a>
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
@@ -53,18 +66,12 @@ class App extends Component {
 
               <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
-                  <li className="nav-item active">
-                    <Link to="/" className="nav-link active">Home<span className="sr-only">(current)</span></Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/users" className="nav-link">Users</Link>
-                  </li >
                   <li className="nav-item">
                     <Link to="/groups" className=" nav-link">Groups</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/newgroup" className="nav-link">New Group</Link>
-                  </li>
+                    <Link to="/users" className="nav-link">Users</Link>
+                  </li >
                 </ul>
 
                 <li class="nav navbar-nav navbar-right">
@@ -80,14 +87,12 @@ class App extends Component {
 
 
               </div>
-            </nav>
+            </nav> */}
 
             <Switch>
-              <Route exact path="/" component={() => <Chat userData={this.state.userData} />} />
+              <Route exact path="/" component={() => <Groups userData={this.state.userData} />} />
               <Route path="/users" component={() => <Users userData={this.state.userData} />} />
               <Route path="/groups" component={() => <Groups userData={this.state.userData} />} />
-
-              <Route path="/newgroup" component={() => <CreateNewGroup userData={this.state.userData} />} />
               <Route component={Notfound} />
             </Switch>
           </div>
