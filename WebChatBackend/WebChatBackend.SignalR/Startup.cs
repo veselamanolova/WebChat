@@ -1,4 +1,6 @@
 using Chat.Hubs;
+using Chat.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using WebChatBackend.Data;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Infrastructure;
@@ -57,6 +62,21 @@ namespace Chat
             IdentityBuilder.AddEntityFrameworkStores<WebChatContext>();
             IdentityBuilder.AddSignInManager<SignInManager<User>>();
 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecurityKey"]));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt =>
+                {
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = key,
+                        ValidateAudience = false,
+                        ValidateIssuer = false
+                    };
+
+                });
+            // By default ASP.NET modifies the claims in the tokens and this is not desired so we need to clear the mapping
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +96,10 @@ namespace Chat
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
             //app.UseCookiePolicy();
+
+            app.UseMiddleware<WebSocketsMiddleware>();
+            app.UseAuthentication();
+
             app.UseCors("CorsPolicy");
             app.UseSignalR(routes =>
             {

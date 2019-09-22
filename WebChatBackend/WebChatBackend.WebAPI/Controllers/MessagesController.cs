@@ -13,6 +13,7 @@ namespace WebChatBackend.WebAPI.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MessagesController : ControllerBase
     {
         private readonly IMessageService _messageService;
@@ -32,7 +33,6 @@ namespace WebChatBackend.WebAPI.Controllers
 
         // GET api/messages/5?search=...
         [HttpGet("{groupId}")]
-        [Authorize]
         public async Task<ActionResult<List<MessageWithUserData>>> Get(int groupId, string search)
         {
             string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value; //"f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3"

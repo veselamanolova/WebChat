@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Threading.Tasks;
 using WebChatBackend.Services;
 using WebChatBackend.Services.Contracts;
 
 namespace Chat.Hubs
 {
+    [Authorize]
     public class ChatHub: Hub
     {
         private readonly IMessageService _messageService;
@@ -19,17 +23,17 @@ namespace Chat.Hubs
             return Groups.AddToGroupAsync(Context.ConnectionId, groupId.ToString());
         }
 
-        public async Task SendMessageToGroup(string messageText, int groupId, string userName)
+        public async Task SendMessageToGroup(string messageText, int groupId)
         {
-            string userId = "f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3"; //Context.User.Claims["..."]
+            string userId = Context.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
             MessageWithUserData realMessage = await _messageService.SaveGroupMessageAsync(userId, messageText, groupId);
             await Clients.Group(groupId.ToString()).
                 SendAsync("ReceiveGroupMessage", realMessage);        
         }   
         
-        public async Task SendMessageToGlobalGroup(string messageText, string userName)
+        public async Task SendMessageToGlobalGroup(string messageText)
         {
-            string userId = "f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3"; // Context.User.Claims["..."]
+            string userId = Context.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
             MessageWithUserData realMessage = await _messageService.SaveGlobalGroupMessageAsync(userId, messageText); 
 
             await Clients.All.SendAsync("ReceiveGlobalMessage", realMessage);

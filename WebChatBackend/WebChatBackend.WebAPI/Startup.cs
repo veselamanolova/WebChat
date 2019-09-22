@@ -49,7 +49,6 @@ namespace WebChatBackend.WebAPI
 
 
              var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecurityKey"]));
-
             services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt => 
                 {
@@ -61,8 +60,7 @@ namespace WebChatBackend.WebAPI
                         ValidateIssuer = false
                     };
 
-            });
-
+                });
             // By default ASP.NET modifies the claims in the tokens and this is not desired so we need to clear the mapping
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }

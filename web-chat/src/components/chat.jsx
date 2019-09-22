@@ -36,7 +36,9 @@ class Chat extends Component {
     console.log(name + " " + groupId);
 
     let hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl("http://localhost:5012/chatHub")
+      .withUrl("http://localhost:5012/chatHub", {
+        accessTokenFactory: () => token
+      })
       .configureLogging(signalR.LogLevel.Debug)
       .build();
 

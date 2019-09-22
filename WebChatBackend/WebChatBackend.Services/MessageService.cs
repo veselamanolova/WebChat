@@ -42,10 +42,10 @@ namespace WebChatBackend.Services
 
         public async Task<MessageWithUserData> SaveGlobalGroupMessageAsync(string userId, string text)
         {
-            return await SaveGroupMessageAsync(userId, text, null);
+            return await SaveMessageAsync(userId, text, null);
         }
 
-        private async Task<MessageWithUserData> SaveGroupMessageAsync(string userId, string text, int? groupId)
+        private async Task<MessageWithUserData> SaveMessageAsync(string userId, string text, int? groupId)
         {
             var message = new Message()
             {
@@ -56,13 +56,14 @@ namespace WebChatBackend.Services
             };
             await _context.Messages.AddAsync(message);
             await _context.SaveChangesAsync();
+            message = await _context.Messages.Include(x => x.User).SingleAsync(x => x.Id == message.Id);
             return new MessageWithUserData(message);
         }
 
         public async Task<MessageWithUserData> SaveGroupMessageAsync(string userId, string text, int groupId)
         {
             await VerifyUserBelongsToGroupAsync(userId, groupId);
-            return await SaveGroupMessageAsync(userId, text, groupId);
+            return await SaveMessageAsync(userId, text, groupId);
         }
 
         private async Task VerifyUserBelongsToGroupAsync(string userId, int groupId)
