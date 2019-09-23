@@ -19,7 +19,7 @@ namespace Chat.Middleware
 
             // web sockets cannot pass headers so we must take the access token from query param and
             // add it to the header before authentication middleware runs
-            if (request.Path.StartsWithSegments("/hub", StringComparison.OrdinalIgnoreCase) &&
+            if (request.Path.StartsWithSegments("/chatHub", StringComparison.OrdinalIgnoreCase) &&
                 request.Query.TryGetValue("access_token", out var accessToken))
             {
                 request.Headers.Add("Authorization", $"Bearer {accessToken}");

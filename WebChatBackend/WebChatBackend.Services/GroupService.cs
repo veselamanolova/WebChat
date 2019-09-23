@@ -20,14 +20,37 @@ namespace WebChatBackend.Services
 
         public async Task<GroupWithUsers> CreateNewGroupAsync(CreateGroupRequest createGroupRequest)
         {
+            int groupUsersNumber = createGroupRequest.UserIds.Count;
+
+            //TODO if userCount ==1
+
+            if (groupUsersNumber == 2)
+            {
+                //check if this private chat already exists 
+
+                Group sameGroup = await _context.Groups
+                    .Include(g => g.UserGroups)
+                    .ThenInclude(ug => ug.User)
+                    .SingleOrDefaultAsync(g => g.IsPrivateChat
+                            && g.UserGroups.Count == 2
+                            && g.UserGroups.Any(ug => ug.UserId == createGroupRequest.UserIds[0])
+                            && g.UserGroups.Any(ug => ug.UserId == createGroupRequest.UserIds[1])
+                    );              
+            }
+
+
             var newGroup = await _context.Groups.AddAsync(new Group
             {
+
                 Name = createGroupRequest.Name,
+                IsPrivateChat = createGroupRequest.UserIds.Count > 2 ? true : false,
                 UserGroups = createGroupRequest.UserIds.Select(userID => new UserGroup()
                 {
-                    UserId = userID
+                    UserId = userID,
+                    
                 }).ToList()
             });
+
             await _context.SaveChangesAsync();
             var insertedGroup = _context.Groups
                 .Include(x => x.UserGroups).ThenInclude(ug => ug.User)

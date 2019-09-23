@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Threading.Tasks;
+using WebChatBackend.Data.Models;
+using WebChatBackend.Services;
 using WebChatBackend.Services.Contracts;
 using WebChatBackend.Services.UserManagement;
 
@@ -14,13 +19,14 @@ namespace WebChatBackend.WebAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+
         public UserController(IUserService userService)
         {
             _userService = userService;
-        }    
-        
+        }
+
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponse>> Login(LoginCredentials loginCredentials)         
+        public async Task<ActionResult<LoginResponse>> Login(LoginCredentials loginCredentials)
         {
             try
             {
@@ -35,7 +41,7 @@ namespace WebChatBackend.WebAPI.Controllers
             catch (Exception ex)
             {
                 return Unauthorized(ex.Message);
-            }           
+            }
         }
 
         [HttpPost("register")]
@@ -53,8 +59,8 @@ namespace WebChatBackend.WebAPI.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest( ex.Message);
-            }   
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET api/users?search=...
@@ -62,7 +68,39 @@ namespace WebChatBackend.WebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<List<BasicUserInfo>>> Get(string search)
         {
-            return await _userService.GetAllUsers(search);            
+            return await _userService.GetAllUsersAsync(search);
+        }
+
+        // GET api/user/...
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<ActionResult<BasicUserInfo>> GetUser(string id)
+        {
+            return await _userService.GetUserAsync(id);
+        }
+
+        // POST api/user/update
+        [HttpPost("update")]
+        [Authorize]
+        public async Task<ActionResult<UpdateUserResponse>> UpdateUser(BasicUserInfo userData)
+        {
+            string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            if (userData.Id != currentUserId)
+                return Unauthorized();
+
+            return await _userService.UpdateUserAsync(userData);
+        }
+
+        // POST api/user/changePassword
+        [HttpPost("changePassword")]
+        [Authorize]
+        public async Task<ActionResult<string>> ChangePassword(ChangePasswordRequest request)
+        {
+            string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            if (request.UserId != currentUserId)
+                return Unauthorized();
+
+            return await _userService.ChangePasswordAsync(request);
         }
     }
 }

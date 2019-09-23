@@ -9,6 +9,9 @@ namespace WebChatBackend.Services.Contracts
     {
         Task<LoginResponse> LoginAsync(LoginCredentials loginCredentials);
         Task<LoginResponse> RegisterAsync(RegisterCredentials registerCredentials);
-        Task<List<BasicUserInfo>> GetAllUsers(string search); 
+        Task<List<BasicUserInfo>> GetAllUsersAsync(string search);
+        Task<BasicUserInfo> GetUserAsync(string id);
+        Task<UpdateUserResponse> UpdateUserAsync(BasicUserInfo userData);
+        Task<string> ChangePasswordAsync(ChangePasswordRequest request);
     }
 }

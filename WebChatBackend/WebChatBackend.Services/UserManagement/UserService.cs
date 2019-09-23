@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using WebChatBackend.Common;
 using WebChatBackend.Data;
@@ -30,16 +31,48 @@ namespace WebChatBackend.Services.UserManagement
             _configuration = configuration;
         }
 
-        public async Task<List<BasicUserInfo>> GetAllUsers(string searchText) =>
+        public async Task<List<BasicUserInfo>> GetAllUsersAsync(string searchText) =>
            await _context.Users
             .Where(u => string.IsNullOrEmpty(searchText)|| u.UserName.Contains(searchText))
             .Select(u => new BasicUserInfo
            {
                Id = u.Id,
                UserName = u.UserName
-    })
+            })
             .OrderBy(u => u.UserName)
             .ToListAsync();
+
+        public async Task<BasicUserInfo> GetUserAsync(string id) =>
+           await _context.Users
+            .Where(u => u.Id == id)
+            .Select(u => new BasicUserInfo
+            {
+                Id = u.Id,
+                UserName = u.UserName
+            })
+            .SingleOrDefaultAsync();
+
+        public async Task<UpdateUserResponse> UpdateUserAsync(BasicUserInfo userData)
+        {
+            User user = await _context.Users
+                .Where(u => u.Id == userData.Id)
+                .SingleOrDefaultAsync();
+            if (user == null)
+                return null;
+
+            IdentityResult identityResult = await _userManager.SetUserNameAsync(user, userData.UserName);
+            var result = new UpdateUserResponse
+            {
+                Success = identityResult.Succeeded,
+                Error = identityResult.Succeeded ? null : string.Join(' ', identityResult.Errors.Select(e => e.Description)),
+                UserInfo = !identityResult.Succeeded ? null : new BasicUserInfo
+                {
+                    Id = user.Id,
+                    UserName = user.UserName
+                }
+            };
+            return result;
+        }
 
         public async Task<LoginResponse> LoginAsync(LoginCredentials loginCredentials)
         {
@@ -128,5 +161,18 @@ namespace WebChatBackend.Services.UserManagement
             };
         }
 
+        public async Task<string> ChangePasswordAsync(ChangePasswordRequest request)
+        {
+            User user = await _context.Users.SingleAsync(u => u.Id == request.UserId);
+            IdentityResult identityResult = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+            if (identityResult.Succeeded)
+                return "";
+            var result = new StringBuilder();
+            foreach (IdentityError error in identityResult.Errors)
+            {
+                result.Append(error.Description + " ");
+            }
+            return result.ToString();
+        }
     }
 }

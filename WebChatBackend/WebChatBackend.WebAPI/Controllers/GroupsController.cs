@@ -41,6 +41,8 @@ namespace WebChatBackend.WebAPI.Controllers
 
             GroupWithUsers newGroup = await _groupService.CreateNewGroupAsync(createGroupRequest);
             return newGroup;
-        }
+        }  
+
+
     }
 }
