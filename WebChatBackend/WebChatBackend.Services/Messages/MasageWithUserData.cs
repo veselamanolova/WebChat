@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using WebChatBackend.Data.Models;
 
-namespace WebChatBackend.Services
+namespace WebChatBackend.Services.Messages
 {
     public class MessageWithUserData
     {

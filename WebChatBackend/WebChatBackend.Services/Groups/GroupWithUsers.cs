@@ -5,7 +5,7 @@ using System.Text;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Services.UserManagement;
 
-namespace WebChatBackend.Services
+namespace WebChatBackend.Services.Groups
 {
     public class GroupWithUsers
     {

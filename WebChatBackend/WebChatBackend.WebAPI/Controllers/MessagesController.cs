@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Services.Contracts;
 using WebChatBackend.Services;
+using WebChatBackend.Services.Messages;
 
 namespace WebChatBackend.WebAPI.Controllers
 {

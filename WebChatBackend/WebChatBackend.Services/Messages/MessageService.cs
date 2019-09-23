@@ -8,7 +8,7 @@ using WebChatBackend.Data.Models;
 using WebChatBackend.Services.Contracts;
 
 
-namespace WebChatBackend.Services
+namespace WebChatBackend.Services.Messages
 {
     public class MessageService : IMessageService
     {

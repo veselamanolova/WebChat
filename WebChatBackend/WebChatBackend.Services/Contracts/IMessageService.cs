@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebChatBackend.Data.Models;
+using WebChatBackend.Services.Messages;
 
 namespace WebChatBackend.Services.Contracts
 {

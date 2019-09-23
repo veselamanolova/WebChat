@@ -7,7 +7,7 @@ using WebChatBackend.Data;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Services.Contracts;
 
-namespace WebChatBackend.Services
+namespace WebChatBackend.Services.Groups
 {
     public class GroupService : IGroupService
     {

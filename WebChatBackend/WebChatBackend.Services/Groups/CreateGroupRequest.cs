@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using WebChatBackend.Services.Groups;
 
-namespace WebChatBackend.Services
+namespace WebChatBackend.Services.Groups
 {
     public class CreateGroupRequest
     {

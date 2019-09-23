@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebChatBackend.Services;
 using WebChatBackend.Services.Contracts;
+using WebChatBackend.Services.Messages;
 
 namespace Chat.Hubs
 {

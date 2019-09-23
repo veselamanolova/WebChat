@@ -142,22 +142,32 @@ class UserProfile extends React.Component {
         })
             .then(result => result.text())
             .then(result => {
-                this.setState(prevState => ({
-                    password: {
-                        ...prevState.password,
-                        changePasswordError: result,
-                        changesPasswordSuccess: !result
-                    }
-                }));
-                setTimeout(() => {
+                if (result) {
+                    this.setState(prevState => ({
+                        password: {
+                            ...prevState.password,
+                            changePasswordError: result,
+                            changesPasswordSuccess: false
+                        }
+                    }));
+                } else {
                     this.setState(prevState => ({
                         password: {
                             ...prevState.password,
                             changePasswordError: '',
-                            changesPasswordSuccess: false
+                            changesPasswordSuccess: true
                         }
                     }));
-                }, 1500);
+                    setTimeout(() => {
+                        this.setState(prevState => ({
+                            password: {
+                                ...prevState.password,
+                                changePasswordError: '',
+                                changesPasswordSuccess: false
+                            }
+                        }));
+                    }, 1500);
+                }
             });
     }
 
@@ -165,112 +175,114 @@ class UserProfile extends React.Component {
         const { user, password } = this.state;
 
         return (
-            <div className="container" style={{ "max-width": "100%" }}>
-                <h5>User info</h5>
-                <div className="mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="form-group row">
-                                <label for="userName" class="col-sm-3 col-form-label">User name</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control-plaintext" id="userName"
-                                        value={user.userName} onChange={e => {
-                                            user.userName = e.target.value;
-                                            this.setState({ user });
-                                        }} />
-                                </div>
-                            </div>
-
-
-                            <div className="d-flex">
-                                <div>
-                                    <button class="btn btn-primary" onClick={this.update}>Update</button>
-                                </div>
-                                <div className="flex-grow-1">
-                                    <div class="alert alert-danger ml-2 mb-0" role="alert"
-                                        style={{
-                                            paddingBottom: "6px", paddingTop: "6px",
-                                            display: this.state.user.updateUserError ? 'block' : 'none'
-                                        }}>
-                                        {this.state.user.updateUserError}
+            <div className="row">
+                <div className="container col-sm-12 col-md-6" style={{ "max-width": "100%" }}>
+                    <h5 className="m-3">{user.userName}'s user profile</h5>
+                    <div className="mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="userName" class="col-sm-3  col-form-label">User name</label>
+                                    <div class="col-sm-9" >
+                                        <input type="text" class="form-control" id="userName"
+                                            value={user.userName} onChange={e => {
+                                                user.userName = e.target.value;
+                                                this.setState({ user });
+                                            }} />
                                     </div>
-                                    <div class="alert alert-success ml-2 mb-0" role="alert"
-                                        style={{
-                                            paddingBottom: "6px", paddingTop: "6px",
-                                            display: this.state.user.updateUserSuccess ? 'block' : 'none'
-                                        }}>
-                                        Profile data updated successfully.
+                                </div>
+
+
+                                <div className="d-flex">
+                                    <div>
+                                        <button class="btn btn-primary" onClick={this.update}>Update</button>
+                                    </div>
+                                    <div className="flex-grow-1">
+                                        <div class="alert alert-danger ml-2 mb-0" role="alert"
+                                            style={{
+                                                paddingBottom: "6px", paddingTop: "6px",
+                                                display: this.state.user.updateUserError ? 'block' : 'none'
+                                            }}>
+                                            {this.state.user.updateUserError}
+                                        </div>
+                                        <div class="alert alert-success ml-2 mb-0" role="alert"
+                                            style={{
+                                                paddingBottom: "6px", paddingTop: "6px",
+                                                display: this.state.user.updateUserSuccess ? 'block' : 'none'
+                                            }}>
+                                            Profile data updated successfully.
+                                    </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <p>
-                    <a class="btn btn-link" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                        Change password
+                    <p>
+                        <a class="btn btn-link" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            Change password
                     </a>
-                </p>
-                <div class="collapse" id="collapseExample">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="form-group row">
-                                <label for="oldPassword" class="col-sm-3 col-form-label">Old password</label>
-                                <div class="col-sm-9">
-                                    <input type="password" class="form-control-plaintext" id="oldPassword"
-                                        value={password.oldPassword} onChange={e => {
-                                            password.oldPassword = e.target.value;
-                                            this.setState({ password });
-                                        }} />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="newPassword" class="col-sm-3 col-form-label">New password</label>
-                                <div class="col-sm-9">
-                                    <input type="password" class="form-control-plaintext" id="newPassword"
-                                        value={password.newPassword} onChange={e => {
-                                            password.newPassword = e.target.value;
-                                            this.setState({ password });
-                                        }} />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="repeatPassword" class="col-sm-3 col-form-label">Repeat password</label>
-                                <div class="col-sm-9">
-                                    <input type="password" class="form-control-plaintext" id="repeatPassword"
-                                        value={password.repeatPassword} onChange={e => {
-                                            password.repeatPassword = e.target.value;
-                                            this.setState({ password });
-                                        }} />
-                                </div>
-                            </div>
-
-                            <div className="d-flex">
-                                <div>
-                                    <button class="btn btn-primary" onClick={this.changePassword}>Save</button>
-                                </div>
-                                <div className="flex-grow-1">
-                                    <div class="alert alert-danger ml-2 mb-0" role="alert"
-                                        style={{
-                                            paddingBottom: "6px", paddingTop: "6px",
-                                            display: this.state.password.changePasswordError ? 'block' : 'none'
-                                        }}>
-                                        {this.state.password.changePasswordError}
+                    </p>
+                    <div class="collapse" id="collapseExample">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="oldPassword" class="col-sm-3 col-form-label">Old password</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="oldPassword"
+                                            value={password.oldPassword} onChange={e => {
+                                                password.oldPassword = e.target.value;
+                                                this.setState({ password });
+                                            }} />
                                     </div>
-                                    <div class="alert alert-success ml-2 mb-0" role="alert"
-                                        style={{
-                                            paddingBottom: "6px", paddingTop: "6px",
-                                            display: this.state.password.changesPasswordSuccess ? 'block' : 'none'
-                                        }}>
-                                        Password changed successfully.
+                                </div>
+                                <div class="form-group row">
+                                    <label for="newPassword" class="col-sm-3 col-form-label">New password</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="newPassword"
+                                            value={password.newPassword} onChange={e => {
+                                                password.newPassword = e.target.value;
+                                                this.setState({ password });
+                                            }} />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="repeatPassword" class="col-sm-3 col-form-label">Repeat password</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="repeatPassword"
+                                            value={password.repeatPassword} onChange={e => {
+                                                password.repeatPassword = e.target.value;
+                                                this.setState({ password });
+                                            }} />
+                                    </div>
+                                </div>
+
+                                <div className="d-flex">
+                                    <div>
+                                        <button class="btn btn-primary" onClick={this.changePassword}>Save</button>
+                                    </div>
+                                    <div className="flex-grow-1">
+                                        <div class="alert alert-danger ml-2 mb-0" role="alert"
+                                            style={{
+                                                paddingBottom: "6px", paddingTop: "6px",
+                                                display: this.state.password.changePasswordError ? 'block' : 'none'
+                                            }}>
+                                            {this.state.password.changePasswordError}
+                                        </div>
+                                        <div class="alert alert-success ml-2 mb-0" role="alert"
+                                            style={{
+                                                paddingBottom: "6px", paddingTop: "6px",
+                                                display: this.state.password.changesPasswordSuccess ? 'block' : 'none'
+                                            }}>
+                                            Password changed successfully.
+                                    </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div >
+                </div >
+            </div>
         );
     }
 }
