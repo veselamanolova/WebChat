@@ -40,7 +40,7 @@ namespace WebChatBackend.WebAPI.Controllers
             string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
             createGroupRequest.UserIds.Add(currentUserId); 
 
-            GroupWithUsers newGroup = await _groupService.CreateNewGroupAsync(createGroupRequest);
+            GroupWithUsers newGroup = await _groupService.CreateNewGroupAsync(createGroupRequest, currentUserId);
             return newGroup;
         }  
 

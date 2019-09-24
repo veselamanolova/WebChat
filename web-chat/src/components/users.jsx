@@ -14,27 +14,24 @@ class Users extends Component {
 
     componentDidMount() {
         this.loadUsers();
-
     }
 
     selectUser = (selectedUser) => {
         let { selectedUsers } = this.state;
 
-        let isUserAlreadySelected = selectedUsers.some(u => u.id === selectedUser.id);
-        // let userIndex =  this.state.findIndex(u => u.id ===selectedUser.id);
-
-        if (!isUserAlreadySelected) {
+        if (this.props.singleSelection) {
+            selectedUsers = [];
             selectedUsers.push(selectedUser);
+        } else {
+            let isUserAlreadySelected = selectedUsers.some(u => u.id === selectedUser.id);
+            if (!isUserAlreadySelected) {
+                selectedUsers.push(selectedUser);
+            } else {
+                selectedUsers = selectedUsers.filter((user) => user.id !== selectedUser.id);
+            }
         }
-        else {
-            selectedUsers = selectedUsers.filter((user) => {
-                return user.id !== selectedUser.id
-            });
-        }
-        this.setState({
-            selectedUsers: selectedUsers
-        });
 
+        this.setState({ selectedUsers })
         if (this.props.selectedUsersChanged) {
             this.props.selectedUsersChanged(selectedUsers);
         }
@@ -43,14 +40,15 @@ class Users extends Component {
 
 
     loadUsers = () => {
+
         const { userName, token } = this.props.userData;
 
         let searchUserTextStr = "";
         if (this.state.searchUserText) {
-            searchUserTextStr = "?search=" + this.state.searchUserText;
+            searchUserTextStr = "&search=" + this.state.searchUserText;
         }
 
-        fetch("http://localhost:5000/api/user/" + searchUserTextStr, {
+        fetch("http://localhost:5000/api/user/?excludeCurrent=true" + searchUserTextStr, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -68,35 +66,51 @@ class Users extends Component {
             );
     }
 
-
+    reset = () => {
+        const oldSearchText = this.state.searchUserText;
+        this.setState({
+            searchUserText: "",
+            selectedUsers: [],
+            selectedUser: null
+        }, () => { if (oldSearchText) this.loadUsers(); });
+    }
 
     render() {
         const { users, searchUserText, selectedUsers } = this.state;
         return (
-            <div className="container">
-                <div class="form-inline">
-                    <input className="form-control form-control-sm" type="text" placeholder="Search user"
-                        value={searchUserText} onChange={e => this.setState({ searchUserText: e.target.value })} />
-                    <button className="btn btn-sm btn-outline-secondary ml-1" onClick={this.loadUsers} title="Search">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-
-                <ul>
-                    {users.map((user) => {
-                        let isUserSelected = selectedUsers.some(u => u.id === user.id);
-
-                        return <div key={user.id} class={"list-group-item list-group-item-action" + (isUserSelected ? " active" : "")}
-
-                            onClick={() => this.selectUser(user)}>
-
-                            {user.userName}
-
+            <div>
+                <div className="d-flex mb-2">
+                    <div class="flex-grow-1 mt-1 ml-1">Users</div>
+                    <div class="form-inline">
+                        <div class="input-group">
+                            <input className="form-control form-control-sm" type="text" placeholder="Search user"
+                                value={searchUserText} onChange={e => this.setState({ searchUserText: e.target.value })} />
+                            <div class="input-group-append">
+                                <button className="btn btn-sm btn-outline-secondary" onClick={this.loadUsers} title="Search">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
                         </div>
-                    })}
 
 
-                </ul>
+                        {/* <input className="form-control form-control-sm" type="text" placeholder="Search user"
+                            value={searchUserText} onChange={e => this.setState({ searchUserText: e.target.value })} />
+                        <button className="btn btn-sm btn-outline-secondary ml-1" onClick={this.loadUsers} title="Search">
+                            <i class="fas fa-search"></i>
+                        </button> */}
+                    </div>
+                </div>
+                {users.map((user) => {
+                    let isUserSelected = selectedUsers.some(u => u.id === user.id);
+
+                    return <div key={user.id} class={"list-group-item list-group-item-action" + (isUserSelected ? " active" : "")}
+
+                        onClick={() => this.selectUser(user)}>
+
+                        {user.userName}
+
+                    </div>
+                })}
             </div>
         );
     }

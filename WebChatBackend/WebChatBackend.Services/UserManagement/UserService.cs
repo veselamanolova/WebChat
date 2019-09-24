@@ -31,9 +31,10 @@ namespace WebChatBackend.Services.UserManagement
             _configuration = configuration;
         }
 
-        public async Task<List<BasicUserInfo>> GetAllUsersAsync(string searchText) =>
+        public async Task<List<BasicUserInfo>> GetAllUsersAsync(bool excludeCurrent, string currentUserId, string searchText) =>
            await _context.Users
-            .Where(u => string.IsNullOrEmpty(searchText)|| u.UserName.Contains(searchText))
+            .Where(u => (string.IsNullOrEmpty(searchText) || u.UserName.Contains(searchText))
+                    && (!excludeCurrent || u.Id != currentUserId))
             .Select(u => new BasicUserInfo
            {
                Id = u.Id,

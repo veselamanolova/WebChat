@@ -18,7 +18,7 @@ namespace WebChatBackend.Services.Groups
             _context = context;
         }
 
-        public async Task<GroupWithUsers> CreateNewGroupAsync(CreateGroupRequest createGroupRequest)
+        public async Task<GroupWithUsers> CreateNewGroupAsync(CreateGroupRequest createGroupRequest, string currentUserId)
         {
             int groupUsersNumber = createGroupRequest.UserIds.Count;
 
@@ -35,7 +35,8 @@ namespace WebChatBackend.Services.Groups
                             && g.UserGroups.Count == 2
                             && g.UserGroups.Any(ug => ug.UserId == createGroupRequest.UserIds[0])
                             && g.UserGroups.Any(ug => ug.UserId == createGroupRequest.UserIds[1])
-                    );              
+                    );
+                return new GroupWithUsers(sameGroup, currentUserId, " ");
             }
 
 
@@ -43,7 +44,7 @@ namespace WebChatBackend.Services.Groups
             {
 
                 Name = createGroupRequest.Name,
-                IsPrivateChat = createGroupRequest.UserIds.Count > 2 ? true : false,
+                IsPrivateChat = createGroupRequest.UserIds.Count == 2,
                 UserGroups = createGroupRequest.UserIds.Select(userID => new UserGroup()
                 {
                     UserId = userID,
@@ -56,7 +57,7 @@ namespace WebChatBackend.Services.Groups
                 .Include(x => x.UserGroups).ThenInclude(ug => ug.User)
                 .First(x => x.Id == newGroup.Entity.Id);
             //await newGroup.Collection(x => x.UserGroups).
-            return new GroupWithUsers(insertedGroup);
+            return new GroupWithUsers(insertedGroup, currentUserId, " ");
         }
 
         public async Task<List<GroupWithUsers>> GetUserGroupsAsync(string userId)

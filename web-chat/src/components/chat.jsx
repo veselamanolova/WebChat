@@ -149,7 +149,7 @@ class Chat extends Component {
     let { previousMessageUserId, isPreviousMessageFromTheSameUser } = this.state;
     let chatDivStyle = {
       overflowY: 'scroll',
-      height: 'calc(100vh - 142px)',
+      height: 'calc(100vh - 150px)',
       border: '1px solid lightgrey'
     };
     let sendMessageDivStyle = {
@@ -171,12 +171,26 @@ class Chat extends Component {
               </h5></div>
               <div>
                 <div class="form-inline">
-                  <input className="form-control form-control-sm" type="text" placeholder="Search messages"
+                  <div class="input-group">
+                    <input className="form-control form-control-sm" type="text" placeholder="Search messages"
+                      value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
+                    <div class="input-group-append">
+                      <button className="btn btn-sm btn-outline-secondary"
+                        onClick={this.loadMessages} title="Search">
+                        <i class="fas fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+
+
+
+
+                  {/* <input className="form-control form-control-sm" type="text" placeholder="Search messages"
                     value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
                   <button className="btn btn-sm btn-outline-secondary ml-1"
                     onClick={this.loadMessages} title="Search">
                     <i class="fas fa-search"></i>
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

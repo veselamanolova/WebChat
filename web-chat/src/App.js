@@ -49,7 +49,7 @@ class App extends Component {
     const isLoggedIn = this.state.userData && this.state.userData.token;
     const navbar = isLoggedIn
       ? (
-        <nav class="navbar navbar-light bg-light">
+        <nav class="navbar navbar-light bg-light mb-2">
           <Link to="/" className="navbar-brand">WebChat</Link>
           <div className="nav-item">
             <Link to="/users" className="nav-link">Users</Link>

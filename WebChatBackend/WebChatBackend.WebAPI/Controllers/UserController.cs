@@ -66,9 +66,10 @@ namespace WebChatBackend.WebAPI.Controllers
         // GET api/users?search=...
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<BasicUserInfo>>> Get(string search)
+        public async Task<ActionResult<List<BasicUserInfo>>> Get(bool excludeCurrent, string search)
         {
-            return await _userService.GetAllUsersAsync(search);
+            string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            return await _userService.GetAllUsersAsync(excludeCurrent, currentUserId, search);
         }
 
         // GET api/user/...
