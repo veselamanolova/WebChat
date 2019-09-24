@@ -154,61 +154,81 @@ class Chat extends Component {
     };
     let sendMessageDivStyle = {
       height: '10vh',
-      // border: '1px solid lightgrey'
     };
 
 
-    if (error) {
-      return <div>Error: {error.message}</div>;
-    } else if (!isLoaded) {
-      return <div>Loading...</div>;
-    } else if (messages.lenght === 0) return <p> No messages</p>;
-    else {
+    const ChatContent = () => {
+      const greeting = 'Hello Function Component!';
       return (
         <div className="container" >
           <div>
             <div className="d-flex">
-              <div class="flex-grow-1"><h5>{name}</h5></div>
-              <div class="form-inline">
-                <input className="form-control form-control-sm" type="text" placeholder="Search messages"
-                  value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
-                <button className="btn btn-sm btn-outline-secondary ml-1" onClick={this.loadMessages} title="Search">
-                  <i class="fas fa-search"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div style={chatDivStyle}>
-            {messages.map((message, index) => {
-              const isCurrentUserMessage = message.userId === userId;
-              isPreviousMessageFromTheSameUser = (previousMessageUserId === message.userId);
-              previousMessageUserId = message.userId
-
-              return <div key={index} style={{ ["margin-" + (isCurrentUserMessage ? "left" : "right")]: "25%" }} >
-                {
-                  (isPreviousMessageFromTheSameUser || isCurrentUserMessage) ? "" : message.userName
-                }
-
-                < div class={"alert alert-" + (isCurrentUserMessage ? "primary" : "secondary")}>
-                  {message.text} <span class="badge badge-info">{new Date(message.date).toLocaleTimeString()}</span>
+              <div class="flex-grow-1"><h5>{name}
+                {/* {!isLoaded ? <i class="fas fa-spinner fa-pulse"></i> : ""} */}
+              </h5></div>
+              <div>
+                <div class="form-inline">
+                  <input className="form-control form-control-sm" type="text" placeholder="Search messages"
+                    value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
+                  <button className="btn btn-sm btn-outline-secondary ml-1" onClick={this.loadMessages} title="Search">
+                    <i class="fas fa-search"></i>
+                  </button>
                 </div>
               </div>
-            }
-
-            )}
-          </div>
-
-          <div class="d-flex">
-            <div class="p-2 flex-grow-1">
-              <input className="form-control" type="text" placeholder="Type message here"
-                value={messageText} onChange={e => this.setState({ messageText: e.target.value })} />
             </div>
-            <div class="p-2 bd-highlight">
-              <button className="btn btn-primary" onClick={this.sendMessage}>Send</button>
+            <div style={chatDivStyle}>
+
+              {
+                <h1> {!isLoaded ? <i class="fas fa-spinner fa-pulse"></i> : ""}</h1>
+              }
+              {
+                (isLoaded && messages.length == 0) ? <p className="p-2"> No messages</p> : ""
+              }
+              {
+                messages.map((message, index) => {
+
+                  const isCurrentUserMessage = message.userId === userId;
+                  isPreviousMessageFromTheSameUser = (previousMessageUserId === message.userId);
+                  previousMessageUserId = message.userId
+
+                  return <div key={index} class="p-2" style={{ ["margin-" + (isCurrentUserMessage ? "left" : "right")]: "25%" }} >
+                    {
+                      (isPreviousMessageFromTheSameUser || isCurrentUserMessage) ? "" : message.userName
+                    }
+
+                    < div class={"alert alert-" + (isCurrentUserMessage ? "primary" : "secondary")}>
+                      {message.text} <span class="badge badge-info">{new Date(message.date).toLocaleTimeString()}</span>
+                    </div>
+                  </div>
+                }
+
+                )}
+            </div>
+
+            <div class="d-flex">
+              <div class="p-2 flex-grow-1">
+                <input className="form-control" type="text" placeholder="Type message here"
+                  value={messageText} onChange={e => this.setState({ messageText: e.target.value })} />
+              </div>
+              <div class="p-2 bd-highlight">
+                <button className="btn btn-primary" onClick={this.sendMessage}>Send</button>
+              </div>
             </div>
           </div>
         </div>
       );
+    }
+
+
+
+    if (error) {
+      return <div>Error: {error.message}</div>;
+    } //else if (!isLoaded) {
+    //   return <ChatContent />
+    // } else if (messages.lenght === 0)
+    //   return <p> No messages</p>;
+    else {
+      return <ChatContent />
     }
   }
 }
