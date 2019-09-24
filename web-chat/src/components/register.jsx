@@ -23,21 +23,20 @@ class Register extends React.Component {
 
     handleRegister = () => {
         console.log(this.state.email + " " + this.state.password)
-        debugger;
+        const { userName, email, password } = this.state;
 
         fetch('http://localhost:5000/api/user/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                email: this.state.email,
-
-                password: this.state.password
+                userName,
+                email,
+                password
             }),
         })
             .then(res => res.json())
             .then(result => {
                 console.log(`result: ${result}`);
-
                 localStorage.setItem('logedInUserData', JSON.stringify(result));
                 window.location.reload()
             });
@@ -54,15 +53,15 @@ class Register extends React.Component {
                         <div class="card">
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="userName"> Email</label>
-                                    <input type="userName" class="form-control bg-light" id="userName" placeholder="name"
+                                    <label for="userName">Name</label>
+                                    <input type="userName" class="form-control bg-light" id="userName"
                                         value={userName}
                                         onChange={e => this.setState({ userName: e.target.value })}
                                     />
                                 </div>
                                 <div class="form-group">
                                     <label for="email"> Email</label>
-                                    <input type="text" class="form-control bg-light" id="email" placeholder="email"
+                                    <input type="text" class="form-control bg-light" id="email"
                                         value={email}
                                         onChange={e => this.setState({ email: e.target.value })}
                                     />
@@ -75,9 +74,9 @@ class Register extends React.Component {
                                     />
                                 </div>
                                 <div className="d-flex">
-                                    <button className="btn btn-success p-1 mt-4 flex-grow-1" onClick={
+                                    <button className="btn btn-primary p-1 mt-4 flex-grow-1" onClick={
                                         this.handleRegister
-                                    }>Login</button>
+                                    }>Register</button>
                                 </div>
                             </div>
                         </div>

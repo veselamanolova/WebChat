@@ -156,21 +156,25 @@ class Chat extends Component {
       height: '10vh',
     };
 
-
-    const ChatContent = () => {
-      const greeting = 'Hello Function Component!';
+    if (error) {
+      return <div>Error: {error.message}</div>;
+    } //else if (!isLoaded) {
+    //   return <ChatContent />
+    // } else if (messages.lenght === 0)
+    //   return <p> No messages</p>;
+    else {
       return (
         <div className="container" >
           <div>
             <div className="d-flex">
               <div class="flex-grow-1"><h5>{name}
-                {/* {!isLoaded ? <i class="fas fa-spinner fa-pulse"></i> : ""} */}
               </h5></div>
               <div>
                 <div class="form-inline">
                   <input className="form-control form-control-sm" type="text" placeholder="Search messages"
                     value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
-                  <button className="btn btn-sm btn-outline-secondary ml-1" onClick={this.loadMessages} title="Search">
+                  <button className="btn btn-sm btn-outline-secondary ml-1"
+                    onClick={this.loadMessages} title="Search">
                     <i class="fas fa-search"></i>
                   </button>
                 </div>
@@ -179,7 +183,7 @@ class Chat extends Component {
             <div style={chatDivStyle}>
 
               {
-                <h1> {!isLoaded ? <i class="fas fa-spinner fa-pulse"></i> : ""}</h1>
+                <h1 className="text-center"> {!isLoaded ? <i class="fas fa-spinner fa-pulse"></i> : ""}</h1>
               }
               {
                 (isLoaded && messages.length == 0) ? <p className="p-2"> No messages</p> : ""
@@ -217,18 +221,6 @@ class Chat extends Component {
           </div>
         </div>
       );
-    }
-
-
-
-    if (error) {
-      return <div>Error: {error.message}</div>;
-    } //else if (!isLoaded) {
-    //   return <ChatContent />
-    // } else if (messages.lenght === 0)
-    //   return <p> No messages</p>;
-    else {
-      return <ChatContent />
     }
   }
 }

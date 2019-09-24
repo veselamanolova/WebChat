@@ -71,7 +71,7 @@ class Login extends React.Component {
                                     />
                                 </div>
                                 <div className="d-flex">
-                                    <button className="btn btn-success p-1 mt-4 flex-grow-1" onClick={
+                                    <button className="btn btn-primary p-1 mt-4 flex-grow-1" onClick={
                                         this.sendLoginCredentials
                                     }>Login</button>
                                 </div>
@@ -79,7 +79,7 @@ class Login extends React.Component {
                         </div>
                         <div class="card mt-4">
                             <div class="card-body">
-                                <div onClick={this.NavigateToRegister}> New to WebChat? Create an account</div>
+                                New to WebChat? <a href="#" onClick={this.NavigateToRegister}>Create an account</a>
                             </div>
                         </div>
                     </div>

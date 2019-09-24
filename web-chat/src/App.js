@@ -85,7 +85,7 @@ class App extends Component {
             <nav class="navbar navbar-light bg-light">
               <Link to="/" className="navbar-brand">WebChat</Link>
               <Link to="/login" className="nav-link ml-md-auto">Log in </Link>
-              <Link to="/register" className="nav-link ml-md-auto">Register </Link>
+              <Link to="/register" className="nav-link">Register </Link>
             </nav>
 
             <Switch>

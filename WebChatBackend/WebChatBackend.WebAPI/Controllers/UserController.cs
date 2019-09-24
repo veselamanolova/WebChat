@@ -30,13 +30,13 @@ namespace WebChatBackend.WebAPI.Controllers
         {
             try
             {
-                var user = await _userService.LoginAsync(loginCredentials);
-                if (user == null)
+                var loginResponse = await _userService.LoginAsync(loginCredentials);
+                if (loginResponse == null)
                 {
                     return Unauthorized();
                 }
 
-                return user;
+                return loginResponse;
             }
             catch (Exception ex)
             {
