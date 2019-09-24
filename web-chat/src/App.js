@@ -5,6 +5,7 @@ import Login from "./components/login";
 import Notfound from "./components/notfound";
 import Users from "./components/users";
 import Groups from "./components/groups";
+import Register from "./components/register";
 
 class App extends Component {
 
@@ -41,9 +42,6 @@ class App extends Component {
     this.setState({
       userData: {}
     });
-    // this.context.router.push('/'); 
-    // return <Redirect push to="/" />;
-    // window.location.reload();
   };
 
   render() {
@@ -69,6 +67,7 @@ class App extends Component {
               <Route exact path="/" component={() => <Groups userData={this.state.userData} />} />
               <Route path="/users" component={() => <Users userData={this.state.userData} />} />
               <Route path="/groups" component={() => <Groups userData={this.state.userData} />} />
+              <Route exact path="/register" component={() => <Register />} />
               <Route path="/profile" component={() => <UserProfile
                 userData={this.state.userData}
                 updateHandler={this.updateLoggedInUser}

@@ -1,4 +1,11 @@
 import React, { Component } from "react";
+import { Route, Link, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom'
+import Register from "./register";
+import { browserHistory } from 'history';
+import {
+    withRouter
+} from 'react-router-dom'
+
 
 class Login extends React.Component {
     constructor(props) {
@@ -10,7 +17,8 @@ class Login extends React.Component {
             userId: '',
             password: '',
             userName: '',
-            token: ''
+            token: '',
+            LoginError: ''
         };
     }
 
@@ -39,31 +47,53 @@ class Login extends React.Component {
     };
 
 
+    NavigateToRegister = () => {
+
+    }
+
+
 
     render() {
         const { email, password } = this.state;
         return (
             <div>
-                <div>
-                    <label>
-                        Email:
-                        <input type="text" value={email}
-                            onChange={e => this.setState({ email: e.target.value })} />
-                    </label>
+                <div className="row">
+                    <div className="container col-sm-12 col-md-4 m-10">
+                        <h3 className="mt-5 mb-4 text-center" >Welcome to WebChat</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="email"> Email</label>
+                                    <input type="text" class="form-control bg-light" id="email" placeholder="email"
+                                        value={email}
+                                        onChange={e => this.setState({ email: e.target.value })}
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control bg-light" id="password"
+                                        value={password}
+                                        onChange={e => this.setState({ password: e.target.value })}
+                                    />
+                                </div>
+                                <div className="d-flex">
+                                    <button className="btn btn-success p-1 mt-4 flex-grow-1" onClick={
+                                        this.sendLoginCredentials
+                                    }>Login</button>
+                                </div>
+                            </div>
+                        </div>
+                        {/* <div class="card mt-4">
+                            <div class="card-body">
+                                <div onClick={this.NavigateToRegister}> New to WebChat? Create an account</div>
+                            </div>
+                        </div> */}
+                    </div>
                 </div>
-                <div>
-                    <label>
-                        Password:
-                        <input type="text" value={password}
-                            onChange={e => this.setState({ password: e.target.value })} />
-                    </label>
-                </div>
-                <button onClick={
-                    this.sendLoginCredentials
-                }>Login</button>
             </div>
         );
     }
 }
+
 
 export default Login;
