@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Link, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom'
+import { Route, Link, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 import UserProfile from "./components/userProfile";
 import Login from "./components/login";
 import Notfound from "./components/notfound";
@@ -47,11 +47,10 @@ class App extends Component {
   render() {
 
     if (this.state.userData && this.state.userData.token) {
-      console.log("in state token")
+      //  console.log("in state token")
       return (
         <Router>
           <div>
-
             <nav class="navbar navbar-light bg-light">
               <Link to="/" className="navbar-brand">WebChat</Link>
               <div className="nav-item">
@@ -64,10 +63,11 @@ class App extends Component {
             </nav>
 
             <Switch>
-              <Route exact path="/" component={() => <Groups userData={this.state.userData} />} />
+              <Route path="/" component={() => <Groups userData={this.state.userData} />} />
+              <Route path="/login" component={() => <Login />} />
               <Route path="/users" component={() => <Users userData={this.state.userData} />} />
               <Route path="/groups" component={() => <Groups userData={this.state.userData} />} />
-              <Route exact path="/register" component={() => <Register />} />
+              <Route path="/register" component={() => <Register />} />
               <Route path="/profile" component={() => <UserProfile
                 userData={this.state.userData}
                 updateHandler={this.updateLoggedInUser}
@@ -80,15 +80,28 @@ class App extends Component {
     }
     else {
       return (
-        <React.Fragment>
-          <main className="container">
-            <Login />
-          </main>
-        </React.Fragment>
+        <Router>
+          <div>
+            <nav class="navbar navbar-light bg-light">
+              <Link to="/" className="navbar-brand">WebChat</Link>
+              <Link to="/login" className="nav-link ml-md-auto">Log in </Link>
+              <Link to="/register" className="nav-link ml-md-auto">Register </Link>
+            </nav>
+
+            <Switch>
+              <Route exact path="/" component={() => <Login />} />
+              <Route exact path="/login" component={() => <Login />} />
+              <Route path="/groups" component={() => <Groups userData={this.state.userData} />} />
+              <Route path="/register" component={() => <Register />} />
+              />
+              <Route component={Notfound} />
+            </Switch>
+          </div>
+        </Router >
       );
     }
 
   }
 }
 
-export default App;
+export default (App);

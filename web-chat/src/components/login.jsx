@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import { Route, Link, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom'
-import Register from "./register";
-import { browserHistory } from 'history';
-import {
-    withRouter
-} from 'react-router-dom'
+import { withRouter } from "react-router-dom";;
 
 
 class Login extends React.Component {
@@ -48,10 +44,8 @@ class Login extends React.Component {
 
 
     NavigateToRegister = () => {
-
+        this.props.history.push("register");
     }
-
-
 
     render() {
         const { email, password } = this.state;
@@ -83,11 +77,11 @@ class Login extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        {/* <div class="card mt-4">
+                        <div class="card mt-4">
                             <div class="card-body">
                                 <div onClick={this.NavigateToRegister}> New to WebChat? Create an account</div>
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -96,4 +90,4 @@ class Login extends React.Component {
 }
 
 
-export default Login;
+export default withRouter(Login);
