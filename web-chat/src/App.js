@@ -42,64 +42,63 @@ class App extends Component {
     this.setState({
       userData: {}
     });
+    window.location.assign(window.location.origin);
   };
 
   render() {
-
-    if (this.state.userData && this.state.userData.token) {
-      //  console.log("in state token")
-      return (
-        <Router>
-          <div>
-            <nav class="navbar navbar-light bg-light">
-              <Link to="/" className="navbar-brand">WebChat</Link>
-              <div className="nav-item">
-                <Link to="/users" className="nav-link">Users</Link>
-              </div >
-              <Link to="/profile" className="nav-link ml-md-auto">Hi, {this.state.userData.userName}</Link>
-              <a className="nav-link" href="#" onClick={this.handleLogout} title="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-              </a>
-            </nav>
-
-            <Switch>
-              <Route path="/" component={() => <Groups userData={this.state.userData} />} />
-              <Route path="/login" component={() => <Login />} />
-              <Route path="/users" component={() => <Users userData={this.state.userData} />} />
-              <Route path="/groups" component={() => <Groups userData={this.state.userData} />} />
-              <Route path="/register" component={() => <Register />} />
-              <Route path="/profile" component={() => <UserProfile
-                userData={this.state.userData}
-                updateHandler={this.updateLoggedInUser}
-              />} />
-              <Route component={Notfound} />
-            </Switch>
-          </div>
-        </Router>
+    const isLoggedIn = this.state.userData && this.state.userData.token;
+    const navbar = isLoggedIn
+      ? (
+        <nav class="navbar navbar-light bg-light">
+          <Link to="/" className="navbar-brand">WebChat</Link>
+          <div className="nav-item">
+            <Link to="/users" className="nav-link">Users</Link>
+          </div >
+          <Link to="/profile" className="nav-link ml-md-auto">Hi, {this.state.userData.userName}</Link>
+          <a className="nav-link" href="#" onClick={this.handleLogout} title="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+          </a>
+        </nav>
+      )
+      : (
+        <nav class="navbar navbar-light bg-light">
+          <Link to="/" className="navbar-brand">WebChat</Link>
+          <Link to="/login" className="nav-link ml-md-auto">Log in </Link>
+          <Link to="/register" className="nav-link">Register </Link>
+        </nav>
       );
-    }
-    else {
-      return (
-        <Router>
-          <div>
-            <nav class="navbar navbar-light bg-light">
-              <Link to="/" className="navbar-brand">WebChat</Link>
-              <Link to="/login" className="nav-link ml-md-auto">Log in </Link>
-              <Link to="/register" className="nav-link">Register </Link>
-            </nav>
-
-            <Switch>
-              <Route exact path="/" component={() => <Login />} />
-              <Route exact path="/login" component={() => <Login />} />
-              <Route path="/groups" component={() => <Groups userData={this.state.userData} />} />
-              <Route path="/register" component={() => <Register />} />
-              />
-              <Route component={Notfound} />
-            </Switch>
-          </div>
-        </Router >
+    const routes = isLoggedIn
+      ? (
+        <Switch>
+          <Route exact path="/" component={() => <Groups userData={this.state.userData} />} />
+          <Route path="/users" component={() => <Users userData={this.state.userData} />} />
+          <Route path="/groups" component={() => <Groups userData={this.state.userData} />} />
+          <Route path="/profile" component={() => <UserProfile
+            userData={this.state.userData}
+            updateHandler={this.updateLoggedInUser}
+          />} />
+          <Route component={Notfound} />
+        </Switch>
+      )
+      : (
+        <Switch>
+          <Route exact path="/" component={() => <Login />} />
+          <Route path="/login" component={() => <Login />} />
+          <Route path="/register" component={() => <Register />} />
+          <Route component={Notfound} />
+        </Switch>
       );
-    }
+
+
+
+    return (
+      <Router>
+        <div>
+          {navbar}
+          {routes}
+        </div>
+      </Router>
+    );
 
   }
 }

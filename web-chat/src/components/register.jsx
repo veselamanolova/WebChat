@@ -38,7 +38,7 @@ class Register extends React.Component {
             .then(result => {
                 console.log(`result: ${result}`);
                 localStorage.setItem('logedInUserData', JSON.stringify(result));
-                window.location.reload()
+                window.location.assign(window.location.origin);
             });
     };
 

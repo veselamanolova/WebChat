@@ -18,24 +18,27 @@ class Users extends Component {
     }
 
     selectUser = (selectedUser) => {
-        const { selectedUsers } = this.state;
+        let { selectedUsers } = this.state;
 
         let isUserAlreadySelected = selectedUsers.some(u => u.id === selectedUser.id);
         // let userIndex =  this.state.findIndex(u => u.id ===selectedUser.id);
 
         if (!isUserAlreadySelected) {
-            selectedUsers: selectedUsers.push(selectedUser)
-            this.setState({
-                selectedUsers: selectedUsers
-            })
+            selectedUsers.push(selectedUser);
         }
         else {
-            this.setState({
-                selectedUsers: selectedUsers.filter(function (user) {
-                    return user.id !== selectedUser.id
-                })
-            })
+            selectedUsers = selectedUsers.filter((user) => {
+                return user.id !== selectedUser.id
+            });
         }
+        this.setState({
+            selectedUsers: selectedUsers
+        });
+
+        if (this.props.selectedUsersChanged) {
+            this.props.selectedUsersChanged(selectedUsers);
+        }
+
     }
 
 

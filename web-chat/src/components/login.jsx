@@ -38,14 +38,14 @@ class Login extends React.Component {
                 console.log(`result: ${result}`);
 
                 localStorage.setItem('logedInUserData', JSON.stringify(result));
-                window.location.reload()
+                window.location.assign(window.location.origin);
             });
     };
 
 
-    NavigateToRegister = () => {
-        this.props.history.push("register");
-    }
+    // NavigateToRegister = () => {
+    //     this.props.history.push("register");
+    // }
 
     render() {
         const { email, password } = this.state;
@@ -79,7 +79,7 @@ class Login extends React.Component {
                         </div>
                         <div class="card mt-4">
                             <div class="card-body">
-                                New to WebChat? <a href="#" onClick={this.NavigateToRegister}>Create an account</a>
+                                New to WebChat? <a href="/register">Create an account</a>
                             </div>
                         </div>
                     </div>
@@ -90,4 +90,4 @@ class Login extends React.Component {
 }
 
 
-export default withRouter(Login);
+export default Login;
