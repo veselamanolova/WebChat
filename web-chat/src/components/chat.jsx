@@ -21,6 +21,13 @@ class Chat extends Component {
     };
   }
 
+
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+  }
+
+
+
   componentDidMount() {
 
     const { userId, userName, token } = this.props.userData;
@@ -93,6 +100,8 @@ class Chat extends Component {
     );
 
     this.loadMessages();
+
+    this.scrollToBottom();
   }
 
   loadMessages = () => {
@@ -120,6 +129,10 @@ class Chat extends Component {
           messages: result
         });
       });
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
   }
 
   componentWillUnmount() {
@@ -182,10 +195,6 @@ class Chat extends Component {
                       </button>
                     </div>
                   </div>
-
-
-
-
                   {/* <input className="form-control form-control-sm" type="text" placeholder="Search messages"
                     value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
                   <button className="btn btn-sm btn-outline-secondary ml-1"
@@ -220,8 +229,10 @@ class Chat extends Component {
                     </div>
                   </div>
                 }
-
                 )}
+              <div style={{ float: "left", clear: "both" }}
+                ref={(el) => { this.messagesEnd = el; }}>
+              </div>
             </div>
 
             <div class="d-flex">
