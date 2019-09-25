@@ -29,18 +29,18 @@ class Groups extends Component {
         newIndividualChatUserId: "",
         createIndividualChatButtonDisabled: true,
 
-        smallDeviceGroupsSelected: true
+        smallDeviceGroupsVisible: true
     };
 
     showGroupsOnSmallScreen = () => {
         this.setState({
-            smallDeviceGroupsSelected: true
+            smallDeviceGroupsVisible: true
         });
     }
 
     showChatOnSmallScreen = () => {
         this.setState({
-            smallDeviceGroupsSelected: false
+            smallDeviceGroupsVisible: false
         });
     }
 
@@ -48,8 +48,9 @@ class Groups extends Component {
         this.setState({
             name: group.name,
             groupId: group.id,
-
         });
+        this.showChatOnSmallScreen();
+
     }
 
     sendMessageAllert = () => {
@@ -165,7 +166,7 @@ class Groups extends Component {
         return (
             <div>
                 <div className="row no-gutters">
-                    <div className="col-3">
+                    <div className={("col-12 col-md-3" + (this.state.smallDeviceGroupsVisible ? "" : " d-none d-md-block"))}>
                         <div className="container">
                             <div className="d-flex">
                                 <div className="flex-grow-1"><h5>Chats</h5></div>
@@ -199,16 +200,13 @@ class Groups extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-9">
-                        <button type="button" className="btn btn-outline-secondary btn-sm hidden-xs"
-                            title="show groups">
-                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                        </button>
-                        <Chat className="hidden-xs" key={this.state.groupId}
+                    <div className={("col-12 col-md-9" + (!this.state.smallDeviceGroupsVisible ? "" : " d-none d-md-block"))}>
+                        <Chat key={this.state.groupId}
                             userData={this.props.userData}
                             groupId={this.state.groupId}
                             name={this.state.name}
-                            sendMessageAllert={this.sendMessageAllert}>
+                            sendMessageAllert={this.sendMessageAllert}
+                            showGroupsOnSmallScreen={this.showGroupsOnSmallScreen}>
                         </Chat>
                     </div>
                 </div>

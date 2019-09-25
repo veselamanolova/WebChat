@@ -90,13 +90,13 @@ namespace WebChatBackend.Services.UserManagement
             var user = await _userManager.FindByEmailAsync(loginCredentials.Email);
             if (user == null)
             {
-                return null; 
+                throw new Exception("User not found"); 
             }
 
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, loginCredentials.Password, false);
             if (!signInResult.Succeeded)
             {
-                return null;
+                throw new Exception("Unsuccessful login"); 
             }
 
             return new LoginResponse()

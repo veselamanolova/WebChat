@@ -193,26 +193,27 @@ class UserProfile extends React.Component {
                                 </div>
 
 
+
                                 <div className="d-flex">
-                                    <div>
-                                        <button class="btn btn-primary" onClick={this.update}>Update</button>
+                                    <button class="btn btn-primary" onClick={this.update}>Update</button>
+                                </div>
+
+                                <div className="flex-grow-1">
+                                    <div class="alert alert-danger ml-2 mb-0" role="alert"
+                                        style={{
+                                            paddingBottom: "6px", paddingTop: "6px",
+                                            display: this.state.user.updateUserError ? 'block' : 'none'
+                                        }}>
+                                        {this.state.user.updateUserError}
                                     </div>
-                                    <div className="flex-grow-1">
-                                        <div class="alert alert-danger ml-2 mb-0" role="alert"
-                                            style={{
-                                                paddingBottom: "6px", paddingTop: "6px",
-                                                display: this.state.user.updateUserError ? 'block' : 'none'
-                                            }}>
-                                            {this.state.user.updateUserError}
-                                        </div>
-                                        <div class="alert alert-success ml-2 mb-0" role="alert"
-                                            style={{
-                                                paddingBottom: "6px", paddingTop: "6px",
-                                                display: this.state.user.updateUserSuccess ? 'block' : 'none'
-                                            }}>
-                                            Profile data updated successfully.
+                                    <div class="alert alert-success ml-2 mb-0" role="alert"
+                                        style={{
+                                            paddingBottom: "6px", paddingTop: "6px",
+                                            display: this.state.user.updateUserSuccess ? 'block' : 'none'
+                                        }}>
+                                        Profile data updated successfully.
                                     </div>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>

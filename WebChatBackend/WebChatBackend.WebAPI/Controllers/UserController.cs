@@ -33,7 +33,8 @@ namespace WebChatBackend.WebAPI.Controllers
                 var loginResponse = await _userService.LoginAsync(loginCredentials);
                 if (loginResponse == null)
                 {
-                    return Unauthorized();
+                    return Unauthorized(); 
+                        
                 }
 
                 return loginResponse;

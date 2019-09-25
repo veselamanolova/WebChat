@@ -17,13 +17,14 @@ class Chat extends Component {
       hubConnection: null,
       previousMessageUserId: "",
       isPreviousMessageFromTheSameUser: false,
-      searchText: ""
+      searchText: "",
+      smallDeviceSearchVisible: false
     };
   }
 
 
   scrollToBottom = () => {
-    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+    this.messagesEnd.scrollIntoView();
   }
 
 
@@ -104,6 +105,12 @@ class Chat extends Component {
     this.scrollToBottom();
   }
 
+  toggleSearch = () => {
+    this.setState({
+      smallDeviceSearchVisible: !this.state.smallDeviceSearchVisible
+    });
+  }
+
   loadMessages = () => {
     let groupIdStr = "";
     if (this.props.groupId) {
@@ -126,7 +133,8 @@ class Chat extends Component {
       .then(result => {
         this.setState({
           isLoaded: true,
-          messages: result
+          messages: result,
+          smallDeviceSearchVisible: false
         });
       });
   }
@@ -183,16 +191,27 @@ class Chat extends Component {
         <div className="container" >
           <div>
             <div className="d-flex">
-              <div class="flex-grow-1"><h5>{name}
-              </h5></div>
+              <div className="d-block d-md-none">
+                <button type="button" className="btn btn-outline-secondary btn-sm mr-1"
+                  title="show groups" onClick={this.props.showGroupsOnSmallScreen}>
+                  <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="flex-grow-1">
+                <h5 className={(this.state.smallDeviceSearchVisible ? "d-none d-md-inline" : "")}>{name}</h5>
+              </div>
               <div>
                 <div class="form-inline">
                   <div class="input-group">
-                    <input className="form-control form-control-sm" type="text" placeholder="Search messages"
-                      value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
+                    <input className={("form-control form-control-sm" + (this.state.smallDeviceSearchVisible ? "" : " d-none d-md-inline"))}
+                      type="text" placeholder="Search messages" value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
                     <div class="input-group-append">
-                      <button className="btn btn-sm btn-outline-secondary"
+                      <button className={("btn btn-sm btn-outline-secondary" + (this.state.smallDeviceSearchVisible ? "" : " d-none d-md-inline"))}
                         onClick={this.loadMessages} title="Search">
+                        <i class="fas fa-search"></i>
+                      </button>
+                      <button className={("btn btn-sm btn-outline-secondary" + (!this.state.smallDeviceSearchVisible ? " d-inline d-md-none" : " d-none"))}
+                        onClick={this.toggleSearch} title="Search">
                         <i class="fas fa-search"></i>
                       </button>
                     </div>
