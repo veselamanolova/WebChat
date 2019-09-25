@@ -54,7 +54,14 @@ namespace WebChatBackend.Services.Messages
                 Text = text,
                 Date = DateTime.UtcNow
             };
-            await _context.Messages.AddAsync(message);
+            var result = await _context.Messages.AddAsync(message);
+
+
+            var group = await _context.Groups.FirstAsync(g => g.Id == groupId);
+            group.LastActivityDate = message.Date;
+            //_context.Groups.Update(group); 
+            _context.Attach(group);
+            _context.Entry(group).Property("LastActivityDate").IsModified = true;           
             await _context.SaveChangesAsync();
             message = await _context.Messages.Include(x => x.User).SingleAsync(x => x.Id == message.Id);
             return new MessageWithUserData(message);

@@ -53,8 +53,9 @@ namespace WebChatBackend.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 40, nullable: false),
-                    IsPrivateChat = table.Column<bool>(nullable: false)
+                    Name = table.Column<string>(nullable: true),
+                    IsPrivateChat = table.Column<bool>(nullable: false),
+                    LastActivityDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -168,7 +169,7 @@ namespace WebChatBackend.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Mesages",
+                name: "Messages",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -180,17 +181,23 @@ namespace WebChatBackend.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Mesages", x => x.Id);
+                    table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Mesages_Groups_GroupId",
+                        name: "FK_Messages_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserGroup",
+                name: "UserGroups",
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
@@ -198,15 +205,15 @@ namespace WebChatBackend.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserGroup", x => new { x.UserId, x.GroupId });
+                    table.PrimaryKey("PK_UserGroups", x => new { x.UserId, x.GroupId });
                     table.ForeignKey(
-                        name: "FK_UserGroup_Groups_GroupId",
+                        name: "FK_UserGroups_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserGroup_AspNetUsers_UserId",
+                        name: "FK_UserGroups_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -253,13 +260,18 @@ namespace WebChatBackend.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Mesages_GroupId",
-                table: "Mesages",
+                name: "IX_Messages_GroupId",
+                table: "Messages",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserGroup_GroupId",
-                table: "UserGroup",
+                name: "IX_Messages_UserId",
+                table: "Messages",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserGroups_GroupId",
+                table: "UserGroups",
                 column: "GroupId");
         }
 
@@ -281,10 +293,10 @@ namespace WebChatBackend.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Mesages");
+                name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "UserGroup");
+                name: "UserGroups");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

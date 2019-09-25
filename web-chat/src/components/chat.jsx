@@ -140,6 +140,7 @@ class Chat extends Component {
         .catch(err => console.error(err));
 
       this.setState({ messageText: '' });
+      this.props.sendMessageAllert();
     }
   };
 
@@ -229,7 +230,8 @@ class Chat extends Component {
                   value={messageText} onChange={e => this.setState({ messageText: e.target.value })} />
               </div>
               <div class="p-2 bd-highlight">
-                <button className="btn btn-primary" onClick={this.sendMessage}>Send</button>
+                <button className="btn btn-primary" onClick={this.sendMessage
+                }>Send</button>
               </div>
             </div>
           </div>

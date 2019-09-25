@@ -23,7 +23,6 @@ class Login extends React.Component {
 
     sendLoginCredentials = () => {
         console.log(this.state.email + " " + this.state.password)
-        debugger;
 
         fetch('http://localhost:5000/api/user/login', {
             method: 'POST',

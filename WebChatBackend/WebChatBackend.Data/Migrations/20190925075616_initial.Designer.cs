@@ -10,7 +10,7 @@ using WebChatBackend.Data;
 namespace WebChatBackend.Data.Migrations
 {
     [DbContext(typeof(WebChatContext))]
-    [Migration("20190918091859_initial")]
+    [Migration("20190925075616_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,9 +139,9 @@ namespace WebChatBackend.Data.Migrations
 
                     b.Property<bool>("IsPrivateChat");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(40);
+                    b.Property<DateTime>("LastActivityDate");
+
+                    b.Property<string>("Name");
 
                     b.HasKey("Id");
 
@@ -167,7 +167,9 @@ namespace WebChatBackend.Data.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Mesages");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("WebChatBackend.Data.Models.User", b =>
@@ -231,7 +233,7 @@ namespace WebChatBackend.Data.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("UserGroup");
+                    b.ToTable("UserGroups");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -281,9 +283,13 @@ namespace WebChatBackend.Data.Migrations
 
             modelBuilder.Entity("WebChatBackend.Data.Models.Message", b =>
                 {
-                    b.HasOne("WebChatBackend.Data.Models.Group")
+                    b.HasOne("WebChatBackend.Data.Models.Group", "Group")
                         .WithMany("Messages")
                         .HasForeignKey("GroupId");
+
+                    b.HasOne("WebChatBackend.Data.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("WebChatBackend.Data.Models.UserGroup", b =>

@@ -38,6 +38,23 @@ class Groups extends Component {
         });
     }
 
+    sendMessageAllert = () => {
+        let orderedGroupsByDate = this.RearangeGroupsByLastUpdate();
+
+    }
+
+    RearangeGroupsByLastUpdate = () => {
+        let updatedGroups = [...this.state.groups];
+        let latestActivityGroupId = updatedGroups.findIndex(g => g.id === this.state.groupId);
+        if (latestActivityGroupId != 0) {
+            let group = updatedGroups.splice(latestActivityGroupId, 1);
+            updatedGroups = [group[0], ...updatedGroups];
+            this.setState({
+                groups: updatedGroups
+            })
+        }
+    }
+
 
 
     componentDidMount() {
@@ -121,9 +138,10 @@ class Groups extends Component {
                 } else {
                     this.setState({
                         groups: [result, ...this.state.groups]
-                    }, () => {
-                        this.selectGroup(result);
-                    });
+                    },
+                        () => {
+                            this.selectGroup(result);
+                        });
                 }
             });
     }
@@ -149,16 +167,6 @@ class Groups extends Component {
                                             <i class="fas fa-users"></i>
                                         </button>
                                     </div>
-
-                                    {/* 
-                                    <button type="button" className="btn btn-outline-secondary btn-sm mr-1"
-                                        data-toggle="modal" data-target="#createNewIndividualChat" title="Create new individual chat">
-                                        <i class="fas fa-user-friends"></i>
-                                    </button>
-                                    <button type="button" className="btn btn-outline-secondary btn-sm float-right"
-                                        data-toggle="modal" data-target="#createNewGroup" title="Create new group">
-                                        <i class="fas fa-users"></i>
-                                    </button> */}
                                 </div>
                             </div>
 
@@ -181,7 +189,8 @@ class Groups extends Component {
                         <Chat key={this.state.groupId}
                             userData={this.props.userData}
                             groupId={this.state.groupId}
-                            name={this.state.name}>}>
+                            name={this.state.name}
+                            sendMessageAllert={this.sendMessageAllert}>
                         </Chat>
                     </div>
                 </div>
