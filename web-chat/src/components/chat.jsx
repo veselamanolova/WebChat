@@ -41,10 +41,8 @@ class Chat extends Component {
 
     const { name, groupId } = this.props;
 
-    console.log(name + " " + groupId);
-
     let hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl("http://localhost:5012/chatHub", {
+      .withUrl(window.webChatConfig.signalRHubAddress, {
         accessTokenFactory: () => token
       })
       .configureLogging(signalR.LogLevel.Debug)
@@ -122,7 +120,7 @@ class Chat extends Component {
       searchTextStr = "?search=" + this.state.searchText;
     }
 
-    fetch("http://localhost:5000/api/messages/" + groupIdStr + searchTextStr, {
+    fetch(window.webChatConfig.webApiAddress + "/messages/" + groupIdStr + searchTextStr, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -182,35 +180,32 @@ class Chat extends Component {
 
     if (error) {
       return <div>Error: {error.message}</div>;
-    } //else if (!isLoaded) {
-    //   return <ChatContent />
-    // } else if (messages.lenght === 0)
-    //   return <p> No messages</p>;
+    }
     else {
       return (
         <div className="container" >
           <div>
             <div className="d-flex">
-              <div className="d-block d-md-none">
+              <div className="d-block d-lg-none">
                 <button type="button" className="btn btn-outline-secondary btn-sm mr-1"
                   title="show groups" onClick={this.props.showGroupsOnSmallScreen}>
                   <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 </button>
               </div>
               <div class="flex-grow-1">
-                <h5 className={(this.state.smallDeviceSearchVisible ? "d-none d-md-inline" : "")}>{name}</h5>
+                <h5 className={(this.state.smallDeviceSearchVisible ? "d-none d-lg-inline" : "")}>{name}</h5>
               </div>
               <div>
                 <div class="form-inline">
                   <div class="input-group">
-                    <input className={("form-control form-control-sm" + (this.state.smallDeviceSearchVisible ? "" : " d-none d-md-inline"))}
+                    <input className={("form-control form-control-sm" + (this.state.smallDeviceSearchVisible ? "" : " d-none d-lg-inline"))}
                       type="text" placeholder="Search messages" value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
                     <div class="input-group-append">
-                      <button className={("btn btn-sm btn-outline-secondary" + (this.state.smallDeviceSearchVisible ? "" : " d-none d-md-inline"))}
+                      <button className={("btn btn-sm btn-outline-secondary" + (this.state.smallDeviceSearchVisible ? "" : " d-none d-lg-inline"))}
                         onClick={this.loadMessages} title="Search">
                         <i class="fas fa-search"></i>
                       </button>
-                      <button className={("btn btn-sm btn-outline-secondary" + (!this.state.smallDeviceSearchVisible ? " d-inline d-md-none" : " d-none"))}
+                      <button className={("btn btn-sm btn-outline-secondary" + (!this.state.smallDeviceSearchVisible ? " d-inline d-lg-none" : " d-none"))}
                         onClick={this.toggleSearch} title="Search">
                         <i class="fas fa-search"></i>
                       </button>

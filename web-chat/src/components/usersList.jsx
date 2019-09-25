@@ -47,7 +47,7 @@ class Users extends Component {
             searchUserTextStr = "?search=" + this.state.searchUserText;
         }
 
-        fetch("http://localhost:5000/api/user/" + searchUserTextStr, {
+        fetch(window.webChatConfig.webApiAddress + "/user/" + searchUserTextStr, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,9 +56,7 @@ class Users extends Component {
         })
             .then(res => res.json())
             .then(result => {
-                console.log(result);
                 this.setState({
-                    // isLoaded: true,
                     users: result
                 });
             }

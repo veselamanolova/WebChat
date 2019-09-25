@@ -24,7 +24,7 @@ class UserProfile extends React.Component {
     componentDidMount() {
         const { userId, token } = this.props.userData;
         this.setState({ token });
-        fetch('http://localhost:5000/api/user/' + userId, {
+        fetch(window.webChatConfig.webApiAddress + '/user/' + userId, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ class UserProfile extends React.Component {
             return;
         }
 
-        fetch('http://localhost:5000/api/user/update', {
+        fetch(window.webChatConfig.webApiAddress + '/user/update', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ class UserProfile extends React.Component {
         }
 
         const { token, user } = this.state;
-        fetch('http://localhost:5000/api/user/changePassword', {
+        fetch(window.webChatConfig.webApiAddress + 'user/changePassword', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ class UserProfile extends React.Component {
 
         return (
             <div className="row">
-                <div className="container col-sm-12 col-md-6" style={{ "max-width": "100%" }}>
+                <div className="container col-sm-12 col-lg-6" style={{ "max-width": "100%" }}>
                     <h5 className="m-3">{user.userName}'s user profile</h5>
                     <div className="mb-3">
                         <div class="card">

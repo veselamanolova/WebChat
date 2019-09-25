@@ -8,7 +8,6 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         var localStrUserData = localStorage.getItem('logedInUserData');
-        console.log(localStrUserData);
         this.state = {
             email: '',
             userId: '',
@@ -23,43 +22,19 @@ class Login extends React.Component {
     }
 
     sendLoginCredentials = () => {
-        console.log(this.state.email + " " + this.state.password)
-
-        // fetch('http://localhost:5000/api/user/login', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({
-        //         email: this.state.email,
-        //         password: this.state.password
-        //     }),
-        // })
-        //     .then(res => res.json())
-        //     .then(result => {
-        //         console.log(`result: ${result}`);
-
-        //         localStorage.setItem('logedInUserData', JSON.stringify(result));
-        //         window.location.assign(window.location.origin);
-        //     });
-
-
-
-
         const loginCredentials = {
             email: this.state.email,
             password: this.state.password
         }
         axios.post(
-            'http://localhost:5000/api/user/login',
+            window.webChatConfig.webApiAddress + '/user/login',
             loginCredentials,
             {
                 headers: { 'Content-Type': 'application/json' }
             })
             // .then(response => { response.json() })
             .then(response => {
-                debugger;
                 if (response.data) {
-                    console.log(`result: ${response.data}`);
-
                     localStorage.setItem('logedInUserData', JSON.stringify(response.data));
                     window.location.assign(window.location.origin);
                 }
@@ -67,7 +42,12 @@ class Login extends React.Component {
                     this.setState({ loginError: response.error });
                 }
             }, error => {
-                this.setState({ loginError: error.response.data });
+                if (error.resonse) {
+                    this.setState({ loginError: error.response.data });
+                }
+                else {
+                    this.setState({ loginError: "Login error" });
+                }
             });
     }
 
@@ -80,7 +60,7 @@ class Login extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="container col-sm-12 col-md-4 m-10">
+                    <div className="container col-sm-12 col-lg-4 m-10">
                         <h3 className="mt-5 mb-4 text-center" >Welcome to WebChat</h3>
                         <div class="card">
                             <div class="card-body">

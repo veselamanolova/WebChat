@@ -6,7 +6,6 @@ class Register extends React.Component {
     constructor(props) {
         super(props);
         var localStrUserData = localStorage.getItem('logedInUserData');
-        console.log(localStrUserData);
         this.state = {
             email: '',
             userName: '',
@@ -22,10 +21,9 @@ class Register extends React.Component {
     }
 
     handleRegister = () => {
-        console.log(this.state.email + " " + this.state.password)
         const { userName, email, password } = this.state;
 
-        fetch('http://localhost:5000/api/user/register', {
+        fetch(window.webChatConfig.webApiAddress + '/user/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -36,7 +34,6 @@ class Register extends React.Component {
         })
             .then(res => res.json())
             .then(result => {
-                console.log(`result: ${result}`);
                 localStorage.setItem('logedInUserData', JSON.stringify(result));
                 window.location.assign(window.location.origin);
             });
@@ -48,7 +45,7 @@ class Register extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="container col-sm-12 col-md-4 m-10">
+                    <div className="container col-sm-12 col-lg-4 m-10">
                         <h3 className="mt-5 mb-4 text-center" >Register to WebChat</h3>
                         <div class="card">
                             <div class="card-body">

@@ -51,10 +51,7 @@ class App extends Component {
       ? (
         <nav class="navbar navbar-light bg-light mb-2">
           <Link to="/" className="navbar-brand">WebChat</Link>
-          <div className="nav-item">
-            <Link to="/users" className="nav-link">Users</Link>
-          </div >
-          <Link to="/profile" className="nav-link ml-md-auto">Hi, {this.state.userData.userName}</Link>
+          <Link to="/profile" className="nav-link ml-auto">Hi, {this.state.userData.userName}</Link>
           <a className="nav-link" href="#" onClick={this.handleLogout} title="Logout">
             <i class="fas fa-sign-out-alt"></i>
           </a>
@@ -63,7 +60,7 @@ class App extends Component {
       : (
         <nav class="navbar navbar-light bg-light">
           <Link to="/" className="navbar-brand">WebChat</Link>
-          <Link to="/login" className="nav-link ml-md-auto">Log in </Link>
+          <Link to="/login" className="nav-link ml-auto">Log in </Link>
           <Link to="/register" className="nav-link">Register </Link>
         </nav>
       );

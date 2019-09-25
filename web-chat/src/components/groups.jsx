@@ -75,9 +75,8 @@ class Groups extends Component {
     componentDidMount() {
 
         const { userId, userName, token } = this.props.userData;
-        console.log(userId);
 
-        fetch(`http://localhost:5000/api/groups`, {
+        fetch(window.webChatConfig.webApiAddress + "/groups", {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -86,7 +85,6 @@ class Groups extends Component {
         })
             .then(res => res.json())
             .then(result => {
-                console.log(result);
                 this.setState({
                     // isLoaded: true,
                     groups: result
@@ -138,7 +136,7 @@ class Groups extends Component {
 
     sendCreateGroupRequest = (name, userIds) => {
         const { token } = this.props.userData;
-        fetch('http://localhost:5000/api/groups/', {
+        fetch(window.webChatConfig.webApiAddress + 'api/groups/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -166,7 +164,7 @@ class Groups extends Component {
         return (
             <div>
                 <div className="row no-gutters">
-                    <div className={("col-12 col-md-3" + (this.state.smallDeviceGroupsVisible ? "" : " d-none d-md-block"))}>
+                    <div className={("col-12 col-lg-3" + (this.state.smallDeviceGroupsVisible ? "" : " d-none d-lg-block"))}>
                         <div className="container">
                             <div className="d-flex">
                                 <div className="flex-grow-1"><h5>Chats</h5></div>
@@ -200,7 +198,7 @@ class Groups extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className={("col-12 col-md-9" + (!this.state.smallDeviceGroupsVisible ? "" : " d-none d-md-block"))}>
+                    <div className={("col-12 col-lg-9" + (!this.state.smallDeviceGroupsVisible ? "" : " d-none d-lg-block"))}>
                         <Chat key={this.state.groupId}
                             userData={this.props.userData}
                             groupId={this.state.groupId}
