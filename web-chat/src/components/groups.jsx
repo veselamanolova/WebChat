@@ -27,8 +27,22 @@ class Groups extends Component {
         createGroupButtonDisabled: true,
 
         newIndividualChatUserId: "",
-        createIndividualChatButtonDisabled: true
+        createIndividualChatButtonDisabled: true,
+
+        smallDeviceGroupsSelected: true
     };
+
+    showGroupsOnSmallScreen = () => {
+        this.setState({
+            smallDeviceGroupsSelected: true
+        });
+    }
+
+    showChatOnSmallScreen = () => {
+        this.setState({
+            smallDeviceGroupsSelected: false
+        });
+    }
 
     selectGroup = (group) => {
         this.setState({
@@ -186,7 +200,11 @@ class Groups extends Component {
                         </div>
                     </div>
                     <div className="col-9">
-                        <Chat key={this.state.groupId}
+                        <button type="button" className="btn btn-outline-secondary btn-sm hidden-xs"
+                            title="show groups">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                        </button>
+                        <Chat className="hidden-xs" key={this.state.groupId}
                             userData={this.props.userData}
                             groupId={this.state.groupId}
                             name={this.state.name}

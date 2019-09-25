@@ -132,7 +132,9 @@ class Chat extends Component {
   }
 
   componentDidUpdate() {
-    this.scrollToBottom();
+    if (this.state.messages.length > 0) {
+      this.scrollToBottom();
+    }
   }
 
   componentWillUnmount() {
