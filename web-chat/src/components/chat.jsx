@@ -27,8 +27,6 @@ class Chat extends Component {
     this.messagesEnd.scrollIntoView();
   }
 
-
-
   componentDidMount() {
 
     const { userId, userName, token } = this.props.userData;
@@ -226,6 +224,7 @@ class Chat extends Component {
                 <h1 className="text-center"> {!isLoaded ? <i class="fas fa-spinner fa-pulse"></i> : ""}</h1>
               }
               {
+
                 (isLoaded && messages.length == 0) ? <p className="p-2"> No messages</p> : ""
               }
               {

@@ -136,7 +136,7 @@ class Groups extends Component {
 
     sendCreateGroupRequest = (name, userIds) => {
         const { token } = this.props.userData;
-        fetch(window.webChatConfig.webApiAddress + 'api/groups/', {
+        fetch(window.webChatConfig.webApiAddress + '/groups/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

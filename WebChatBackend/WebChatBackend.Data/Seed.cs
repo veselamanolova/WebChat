@@ -28,7 +28,7 @@ namespace WebChatBackend.Data
         private static async Task SeedPublicGroupAsync(WebChatContext context, List<User> users)
         {
             var messages = new List<Message>();
-            for (int i = 0; i < 30; i++)
+            for (int i = 1; i <=30; i++)
             {
                 context.Messages.AddRange(new Message()
                 {

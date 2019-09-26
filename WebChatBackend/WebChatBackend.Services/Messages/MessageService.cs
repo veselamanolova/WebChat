@@ -19,25 +19,35 @@ namespace WebChatBackend.Services.Messages
             _context = context;
         }
 
-        public async Task<List<MessageWithUserData>> GetAllGlobalGroupMessagesAsync(string searchText)
+        public async Task<List<MessageWithUserData>> GetAllGlobalGroupMessagesAsync(string searchText, int? skip, int? take)
         {
-            return await GetGroupMessagesAsync(null, searchText);
+            return await GetGroupMessagesAsync(null, searchText, skip, take);
         }
 
-        public async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int groupId, string currentUserId, string searchText)
+        public async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int groupId, string currentUserId, string searchText, int? skip, int? take)
         {
             await VerifyUserBelongsToGroupAsync(currentUserId, groupId);
-
-            return await GetGroupMessagesAsync(groupId, searchText);
+            return await GetGroupMessagesAsync(groupId, searchText, skip, take);
         }
 
-        private async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int? groupId, string searchText)
+        private async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int? groupId, string searchText, int? skip, int? take)
         {
-            return await _context.Messages
-             .Where(m => m.GroupId == groupId && (string.IsNullOrEmpty(searchText) || m.Text.Contains(searchText)))
-             .Include(m => m.User)
-            .Select(m => new MessageWithUserData(m))
-            .ToListAsync();
+            
+            var queriable = _context.Messages
+                .Where(m => m.GroupId == groupId && (string.IsNullOrEmpty(searchText) || m.Text.Contains(searchText)));
+
+            int allCount = await queriable.CountAsync();
+            int defaultTake = 5;
+            int  defaultSkip = (allCount < defaultTake) ? 0 : allCount - defaultTake; 
+            
+            var result=   await queriable
+                .Skip(skip?? defaultSkip) 
+                .Take(take??5)
+                .Include(m => m.User)
+                .Select(m => new MessageWithUserData(m))
+                .ToListAsync();
+
+            return result; 
         }
 
         public async Task<MessageWithUserData> SaveGlobalGroupMessageAsync(string userId, string text)
@@ -58,8 +68,7 @@ namespace WebChatBackend.Services.Messages
 
 
             var group = await _context.Groups.FirstAsync(g => g.Id == groupId);
-            group.LastActivityDate = message.Date;
-            //_context.Groups.Update(group); 
+            group.LastActivityDate = message.Date;            
             _context.Attach(group);
             _context.Entry(group).Property("LastActivityDate").IsModified = true;           
             await _context.SaveChangesAsync();

@@ -26,18 +26,18 @@ namespace WebChatBackend.WebAPI.Controllers
 
         // GET api/messages?search=...
         [HttpGet]
-        public async Task<ActionResult<List<MessageWithUserData>>> Get(string search)
+        public async Task<ActionResult<List<MessageWithUserData>>> Get(string search, int? skip, int? take)
         {
-            List<MessageWithUserData> publicMessages = await _messageService.GetAllGlobalGroupMessagesAsync(search);
+            List<MessageWithUserData> publicMessages = await _messageService.GetAllGlobalGroupMessagesAsync(search, skip, take);
             return publicMessages;
         }
 
         // GET api/messages/5?search=...
         [HttpGet("{groupId}")]
-        public async Task<ActionResult<List<MessageWithUserData>>> Get(int groupId, string search)
+        public async Task<ActionResult<List<MessageWithUserData>>> Get(int groupId, string search, int? skip, int? take )
         {
             string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value; //"f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3"
-            List<MessageWithUserData> groupMessages = await _messageService.GetGroupMessagesAsync(groupId, currentUserId, search); 
+            List<MessageWithUserData> groupMessages = await _messageService.GetGroupMessagesAsync(groupId, currentUserId, search, skip, take); 
             return groupMessages;
         }
     }
