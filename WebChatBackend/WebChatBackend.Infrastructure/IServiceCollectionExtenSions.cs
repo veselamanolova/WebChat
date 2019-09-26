@@ -22,9 +22,7 @@ namespace WebChatBackend.Infrastructure
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IJwtGenerator, JwtGenerator> (); 
 
-
             return services;
-
         }
     }
 }

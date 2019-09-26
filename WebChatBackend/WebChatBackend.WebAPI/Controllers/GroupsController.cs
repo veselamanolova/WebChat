@@ -33,7 +33,6 @@ namespace WebChatBackend.WebAPI.Controllers
             return userGroups;
         }
 
-
         [HttpPost]
         public async Task<ActionResult<GroupWithUsers>> Post(CreateGroupRequest createGroupRequest)
         {
@@ -43,7 +42,5 @@ namespace WebChatBackend.WebAPI.Controllers
             GroupWithUsers newGroup = await _groupService.CreateNewGroupAsync(createGroupRequest, currentUserId);
             return newGroup;
         }  
-
-
     }
 }

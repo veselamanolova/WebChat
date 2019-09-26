@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace WebChatBackend.Data.Models
@@ -15,7 +14,6 @@ namespace WebChatBackend.Data.Models
         public List<UserGroup> UserGroups { get; set; }
         public List<Message> Messages { get; set; }
       
-
         public IEnumerable<User> GetUsers()
         {
             return this?.UserGroups.Select(ug => ug.User) ?? new User[] { };

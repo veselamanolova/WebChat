@@ -22,12 +22,9 @@ namespace WebChatBackend.Services.Groups
         {
             int groupUsersNumber = createGroupRequest.UserIds.Count;
 
-            //TODO if userCount ==1
-
             if (groupUsersNumber == 2)
             {
                 //check if this private chat already exists 
-
                 Group sameGroup = await _context.Groups
                     .Include(g => g.UserGroups)
                     .ThenInclude(ug => ug.User)
@@ -56,7 +53,6 @@ namespace WebChatBackend.Services.Groups
             var insertedGroup = _context.Groups
                 .Include(x => x.UserGroups).ThenInclude(ug => ug.User)
                 .First(x => x.Id == newGroup.Entity.Id);
-            //await newGroup.Collection(x => x.UserGroups).
             return new GroupWithUsers(insertedGroup, currentUserId, " ");
         }
 

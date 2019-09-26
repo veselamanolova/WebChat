@@ -43,8 +43,7 @@ namespace Chat
                 policy
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                    .WithOrigins("http://localhost:3000")
-                   // .DisallowCredentials();
+                    .WithOrigins("http://localhost:3000")                   
                    .AllowCredentials();
             }));           
 
@@ -92,12 +91,10 @@ namespace Chat
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
+            app.UseStaticFiles();           
 
-            //app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            //app.UseCookiePolicy();
-
-            app.UseMiddleware<WebSocketsMiddleware>();
+            app.UseMiddleware<WebSocketsAuthorizationMiddleware>();
             app.UseAuthentication();
 
             app.UseCors("CorsPolicy");

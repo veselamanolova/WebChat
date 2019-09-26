@@ -14,10 +14,9 @@ namespace WebChatBackend.Services.UserManagement
         public string CreateToken(User user, string securityKey)
         {
             var claims = new List<Claim>
-           {
-               new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-               new Claim("TestType", "TestValue")
-           };
+            {
+               new Claim(JwtRegisteredClaimNames.Sub, user.Id)
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
@@ -31,10 +30,8 @@ namespace WebChatBackend.Services.UserManagement
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-
             var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token); 
+            return tokenHandler.WriteToken(token);
 
         }
     }

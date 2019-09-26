@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebChatBackend.Common;
 using WebChatBackend.Data;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Services.Contracts;
@@ -111,27 +110,27 @@ namespace WebChatBackend.Services.UserManagement
         {
             if (String.IsNullOrEmpty(registerCredentials.UserName))
             {
-                throw new ArgumentException(GlobalConstants.emptyUserName);
+                throw new ArgumentException(UserConstants.EmptyUserName);
             }
 
             if (String.IsNullOrEmpty(registerCredentials.Email))
             {
-                throw new ArgumentException(GlobalConstants.emptyEmail);
+                throw new ArgumentException(UserConstants.EmptyEmail);
             }
 
             if (String.IsNullOrEmpty(registerCredentials.Password))
             {
-                throw new ArgumentException(GlobalConstants.emptyPassword);
+                throw new ArgumentException(UserConstants.EmptyPassword);
             }
 
             if( await _context.Users.Where(x=> x.Email == registerCredentials.Email).AnyAsync())
             {
-                throw new ArgumentException(GlobalConstants.emailIsOccupied); 
+                throw new ArgumentException(UserConstants.EmailIsOccupied); 
             }
 
             if (await _context.Users.Where(x => x.UserName == registerCredentials.UserName).AnyAsync())
             {
-                throw new ArgumentException(GlobalConstants.nameIsOccupied);
+                throw new ArgumentException(UserConstants.NameIsOccupied);
             }
 
             var user = new User
@@ -141,7 +140,6 @@ namespace WebChatBackend.Services.UserManagement
             }; 
 
             await _userManager.CreateAsync(user, registerCredentials.Password);
-
 
             if (user == null)
             {

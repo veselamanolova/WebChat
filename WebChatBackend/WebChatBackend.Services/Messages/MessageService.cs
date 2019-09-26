@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebChatBackend.Data;
 using WebChatBackend.Data.Models;
 using WebChatBackend.Services.Contracts;
-
 
 namespace WebChatBackend.Services.Messages
 {
@@ -31,8 +29,7 @@ namespace WebChatBackend.Services.Messages
         }
 
         private async Task<MessagesWithUserDataEnvelope> GetGroupMessagesAsync(int? groupId, string searchText, int? skip, int? take)
-        {
-            
+        {            
             var queriable = _context.Messages
                 .Where(m => m.GroupId == groupId && (string.IsNullOrEmpty(searchText) || m.Text.Contains(searchText)));
 
@@ -66,14 +63,14 @@ namespace WebChatBackend.Services.Messages
                 Text = text,
                 Date = DateTime.UtcNow
             };
-            var result = await _context.Messages.AddAsync(message);
-
+            await _context.Messages.AddAsync(message);
 
             var group = await _context.Groups.FirstAsync(g => g.Id == groupId);
             group.LastActivityDate = message.Date;            
             _context.Attach(group);
             _context.Entry(group).Property("LastActivityDate").IsModified = true;           
             await _context.SaveChangesAsync();
+
             message = await _context.Messages.Include(x => x.User).SingleAsync(x => x.Id == message.Id);
             return new MessageWithUserData(message);
         }

@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WebChatBackend.Data.Models;
 
 namespace WebChatBackend.Data
-{
-   
+{   
     public class WebChatContext : IdentityDbContext<User>
     {
         public WebChatContext(DbContextOptions<WebChatContext> options)
@@ -18,7 +17,6 @@ namespace WebChatBackend.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<UserGroup>()

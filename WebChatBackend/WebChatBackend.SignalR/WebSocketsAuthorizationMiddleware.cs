@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace Chat.Middleware
 {
-    public class WebSocketsMiddleware
+    public class WebSocketsAuthorizationMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public WebSocketsMiddleware(RequestDelegate next)
+        public WebSocketsAuthorizationMiddleware(RequestDelegate next)
         {
             _next = next;
         }

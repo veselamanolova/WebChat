@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebChatBackend.Data;
 using WebChatBackend.Data.Models;
 
-namespace WebChatBackend.Data
+namespace WebChatBackend.WebAPI
 {
     public class Seed
     {
