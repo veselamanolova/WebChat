@@ -7,7 +7,7 @@
 - Visual Studio
 
 ### Download
-git clone https://github.com/veselamanolova/WebChat.git
+`git clone https://github.com/veselamanolova/WebChat.git`
 
 ### Backend
 - Open in Visual Studio **WebChat\WebChatBackend\WebChatBackend.sln**
