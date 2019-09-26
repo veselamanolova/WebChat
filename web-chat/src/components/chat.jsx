@@ -9,6 +9,11 @@ class Chat extends Component {
       error: null,
       isLoaded: false,
       messages: [],
+      totalMessages: 0,
+      skip: null,
+      numberOfMessagesToRequest: 5,
+      pages: null,
+      currentPage: null,
       messageText: "",
       userId: "",
       group: null,
@@ -26,6 +31,7 @@ class Chat extends Component {
   scrollToBottom = () => {
     this.messagesEnd.scrollIntoView();
   }
+
 
   componentDidMount() {
 
@@ -108,15 +114,18 @@ class Chat extends Component {
   }
 
   loadMessages = () => {
+    const { searchText, numberOfMessagesToRequest } = this.state;
     let groupIdStr = "";
     if (this.props.groupId) {
       groupIdStr = this.props.groupId;
     }
 
     let searchTextStr = "";
-    if (this.state.searchText) {
+    if (searchText) {
       searchTextStr = "?search=" + this.state.searchText;
     }
+
+
 
     fetch(window.webChatConfig.webApiAddress + "/messages/" + groupIdStr + searchTextStr, {
       method: 'GET',
@@ -129,11 +138,14 @@ class Chat extends Component {
       .then(result => {
         this.setState({
           isLoaded: true,
-          messages: result,
+          messages: result.messages,
+          totalMessages: result.totalMessages,
           smallDeviceSearchVisible: false
         });
       });
   }
+
+
 
   componentDidUpdate() {
     if (this.state.messages.length > 0) {
@@ -209,12 +221,6 @@ class Chat extends Component {
                       </button>
                     </div>
                   </div>
-                  {/* <input className="form-control form-control-sm" type="text" placeholder="Search messages"
-                    value={searchText} onChange={e => this.setState({ searchText: e.target.value })} />
-                  <button className="btn btn-sm btn-outline-secondary ml-1"
-                    onClick={this.loadMessages} title="Search">
-                    <i class="fas fa-search"></i>
-                  </button> */}
                 </div>
               </div>
             </div>
@@ -240,7 +246,7 @@ class Chat extends Component {
                     }
 
                     < div class={"alert alert-" + (isCurrentUserMessage ? "primary" : "secondary")}>
-                      {message.text} <span class="badge badge-info">{new Date(message.date).toLocaleTimeString()}</span>
+                      {message.text} <span class="badge badge-info">{new Date(message.date).toLocaleString()}</span>
                     </div>
                   </div>
                 }

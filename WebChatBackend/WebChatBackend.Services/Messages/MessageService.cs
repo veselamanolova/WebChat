@@ -19,35 +19,37 @@ namespace WebChatBackend.Services.Messages
             _context = context;
         }
 
-        public async Task<List<MessageWithUserData>> GetAllGlobalGroupMessagesAsync(string searchText, int? skip, int? take)
+        public async Task<MessagesWithUserDataEnvelope> GetGlobalGroupMessagesAsync(string searchText, int? skip, int? take)
         {
             return await GetGroupMessagesAsync(null, searchText, skip, take);
         }
 
-        public async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int groupId, string currentUserId, string searchText, int? skip, int? take)
+        public async Task<MessagesWithUserDataEnvelope> GetGroupMessagesAsync(int groupId, string currentUserId, string searchText, int? skip, int? take)
         {
             await VerifyUserBelongsToGroupAsync(currentUserId, groupId);
             return await GetGroupMessagesAsync(groupId, searchText, skip, take);
         }
 
-        private async Task<List<MessageWithUserData>> GetGroupMessagesAsync(int? groupId, string searchText, int? skip, int? take)
+        private async Task<MessagesWithUserDataEnvelope> GetGroupMessagesAsync(int? groupId, string searchText, int? skip, int? take)
         {
             
             var queriable = _context.Messages
                 .Where(m => m.GroupId == groupId && (string.IsNullOrEmpty(searchText) || m.Text.Contains(searchText)));
 
             int allCount = await queriable.CountAsync();
-            int defaultTake = 5;
-            int  defaultSkip = (allCount < defaultTake) ? 0 : allCount - defaultTake; 
             
-            var result=   await queriable
-                .Skip(skip?? defaultSkip) 
-                .Take(take??5)
+            var result=  await queriable
+                .Skip(skip?? 0) 
+                .Take(take?? allCount)
                 .Include(m => m.User)
                 .Select(m => new MessageWithUserData(m))
                 .ToListAsync();
 
-            return result; 
+            return new MessagesWithUserDataEnvelope()
+            {
+                TotalMessages = allCount,
+                Messages = result
+            }; 
         }
 
         public async Task<MessageWithUserData> SaveGlobalGroupMessageAsync(string userId, string text)
