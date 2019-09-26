@@ -35,9 +35,10 @@ Or register your own user.
 ## Features
 - User register and login
 - User profile
-- Individual chatting
-- Chat in one group for all users
-- Individual chat groups
+- Real-time messaging:
+  - Individual chatting
+  - Chat in one group for all users
+  - Individual chat groups
 - History of the messages + Search
 - Responsive design
 
