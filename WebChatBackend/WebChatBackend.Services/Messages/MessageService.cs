@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebChatBackend.Data;
@@ -34,13 +35,18 @@ namespace WebChatBackend.Services.Messages
                 .Where(m => m.GroupId == groupId && (string.IsNullOrEmpty(searchText) || m.Text.Contains(searchText)));
 
             int allCount = await queriable.CountAsync();
-            
-            var result=  await queriable
-                .Skip(skip?? 0) 
-                .Take(take?? allCount)
+            var result = new List<MessageWithUserData>(); 
+
+            if (allCount > 0)
+            {
+                result = await queriable
+                .Skip(skip ?? 0)
+                .Take(take ?? allCount)
                 .Include(m => m.User)
                 .Select(m => new MessageWithUserData(m))
                 .ToListAsync();
+            }          
+            
 
             return new MessagesWithUserDataEnvelope()
             {

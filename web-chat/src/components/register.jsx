@@ -36,9 +36,6 @@ class Register extends React.Component {
                 headers: { 'Content-Type': 'application/json' }
             })
             .then(response => {
-                debugger;
-                console.log("Response" + JSON.stringify(response));
-                console.log(JSON.stringify(response.data));
                 if (response.data) {
                     localStorage.setItem('logedInUserData', JSON.stringify(response.data));
                     window.location.assign(window.location.origin);

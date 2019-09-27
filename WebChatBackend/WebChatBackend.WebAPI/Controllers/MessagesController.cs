@@ -36,7 +36,7 @@ namespace WebChatBackend.WebAPI.Controllers
         [HttpGet("{groupId}")]
         public async Task<ActionResult<MessagesWithUserDataEnvelope>> Get(int groupId, string search, int? skip, int? take )
         {
-            string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value; //"f5133dd5-fa37-4ba0-b8ef-b8fcaacec8d3"
+            string currentUserId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value; 
             MessagesWithUserDataEnvelope groupMessages = await _messageService.GetGroupMessagesAsync(groupId, currentUserId, search, skip, take); 
             return groupMessages;
         }
