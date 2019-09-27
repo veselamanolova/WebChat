@@ -51,7 +51,7 @@ namespace WebChatBackend.Services.Messages
 
         public async Task<MessageWithUserData> SaveGlobalGroupMessageAsync(string userId, string text)
         {
-            return await SaveMessageAsync(userId, text, null);
+           return await SaveMessageAsync(userId, text, null);            
         }
 
         private async Task<MessageWithUserData> SaveMessageAsync(string userId, string text, int? groupId)
@@ -63,15 +63,18 @@ namespace WebChatBackend.Services.Messages
                 Text = text,
                 Date = DateTime.UtcNow
             };
-            await _context.Messages.AddAsync(message);
+            await _context.Messages.AddAsync(message);            
 
-            var group = await _context.Groups.FirstAsync(g => g.Id == groupId);
-            group.LastActivityDate = message.Date;            
-            _context.Attach(group);
-            _context.Entry(group).Property("LastActivityDate").IsModified = true;           
+            if (groupId != null)
+            {
+                var group = await _context.Groups.FirstAsync(g => g.Id == groupId);
+                group.LastActivityDate = message.Date;
+                _context.Attach(group);
+                _context.Entry(group).Property("LastActivityDate").IsModified = true;                
+            }
             await _context.SaveChangesAsync();
 
-            message = await _context.Messages.Include(x => x.User).SingleAsync(x => x.Id == message.Id);
+            message = await _context.Messages.Include(x => x.User).SingleAsync(x => x.Id == message.Id);           
             return new MessageWithUserData(message);
         }
 
