@@ -67,15 +67,20 @@ namespace WebChatBackend.Services.Messages
 
             if (groupId != null)
             {
-                var group = await _context.Groups.FirstAsync(g => g.Id == groupId);
-                group.LastActivityDate = message.Date;
-                _context.Attach(group);
-                _context.Entry(group).Property("LastActivityDate").IsModified = true;                
+               await UpdateGroupLastActivityDate(groupId, message);
             }
             await _context.SaveChangesAsync();
 
             message = await _context.Messages.Include(x => x.User).SingleAsync(x => x.Id == message.Id);           
             return new MessageWithUserData(message);
+        }
+
+        private async Task UpdateGroupLastActivityDate(int? groupId, Message message)
+        {
+            var group = await _context.Groups.FirstAsync(g => g.Id == groupId);
+            group.LastActivityDate = message.Date;
+            _context.Attach(group);
+            _context.Entry(group).Property("LastActivityDate").IsModified = true;
         }
 
         public async Task<MessageWithUserData> SaveGroupMessageAsync(string userId, string text, int groupId)

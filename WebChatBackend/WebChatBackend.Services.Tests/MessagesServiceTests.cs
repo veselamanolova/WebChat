@@ -1,7 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using WebChatBackend.Data;
 using WebChatBackend.Data.Models;
@@ -22,16 +21,62 @@ namespace WebChatBackend.Services.Tests
                 await arrangeContext.SaveChangesAsync();
             }
 
-            using (var actcontext = new WebChatContext(TestUtils.GetOptions(databaseName)))
+            using (var actContext = new WebChatContext(TestUtils.GetOptions(databaseName)))
             {
-                var sut = new MessageService(actcontext);
+                var sut = new MessageService(actContext);
                 MessageWithUserData result = await sut.SaveGlobalGroupMessageAsync("1", "Message1");
-
                 Assert.AreEqual(1, result.Id);
                 Assert.IsNull(result.GroupId);
                 Assert.AreEqual("1", result.UserId);
+                Assert.AreEqual("User1", result.UserName);
                 Assert.AreEqual("Message1", result.Text);
                 Assert.IsTrue(DateTime.UtcNow - DateTime.Parse(result.Date) < TimeSpan.FromSeconds(2));
+            }
+        }
+
+        [TestMethod]
+        public async Task SaveGroupMessageAsync_SaveMessageToGroup()
+        {
+            const string databaseName = nameof(SaveGroupMessageAsync_SaveMessageToGroup);
+            using (var arrangeContext = new WebChatContext(TestUtils.GetOptions(databaseName)))
+            {
+                await arrangeContext.Users.AddAsync(new User { Id = "1", UserName = "User1" });
+                await arrangeContext.Groups.AddAsync(new Group { Id = 1, Name = "Group1" });
+                await arrangeContext.UserGroups.AddAsync(new UserGroup { UserId = "1", GroupId= 1 });   
+                await arrangeContext.SaveChangesAsync();
+            }
+
+            using (var actContext = new WebChatContext(TestUtils.GetOptions(databaseName)))
+            {
+                var sut = new MessageService(actContext);
+                MessageWithUserData result = await sut.SaveGroupMessageAsync("1", "Message1", 1);
+                Assert.AreEqual(1, result.GroupId);
+                Assert.AreEqual("User1", result.UserName);
+                Assert.AreEqual("1", result.UserId);
+                Assert.AreEqual("Message1", result.Text);
+                Assert.IsTrue(DateTime.UtcNow - DateTime.Parse(result.Date) < TimeSpan.FromSeconds(2));
+            }
+        }
+
+        [TestMethod]
+        public async Task SaveGroupMessageAsync_UpdatesGroupLastActivityDate()
+        {
+            const string databaseName = nameof(SaveGroupMessageAsync_UpdatesGroupLastActivityDate);
+            using (var arrangeContext = new WebChatContext(TestUtils.GetOptions(databaseName)))
+            {
+                await arrangeContext.Users.AddAsync(new User { Id = "1", UserName = "User1" });
+                await arrangeContext.Groups.AddAsync(new Group { Id = 1, Name = "Group1" });
+                await arrangeContext.UserGroups.AddAsync(new UserGroup { UserId = "1", GroupId = 1 });
+                await arrangeContext.SaveChangesAsync();
+            }
+
+            using (var actContext = new WebChatContext(TestUtils.GetOptions(databaseName)))
+            {
+                var sut = new MessageService(actContext);
+                await sut.SaveGroupMessageAsync("1", "Message1", 1);
+                var result  = await  actContext.Groups.FirstAsync(g => g.Name == "Group1");  
+
+                Assert.IsTrue(DateTime.UtcNow - result.LastActivityDate < TimeSpan.FromSeconds(2));
             }
         }
     }
