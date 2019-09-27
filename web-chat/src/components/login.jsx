@@ -32,7 +32,6 @@ class Login extends React.Component {
             {
                 headers: { 'Content-Type': 'application/json' }
             })
-            // .then(response => { response.json() })
             .then(response => {
                 if (response.data) {
                     localStorage.setItem('logedInUserData', JSON.stringify(response.data));
@@ -50,10 +49,6 @@ class Login extends React.Component {
                 }
             });
     }
-
-    // NavigateToRegister = () => {
-    //     this.props.history.push("register");
-    // }
 
     render() {
         const { email, password } = this.state;

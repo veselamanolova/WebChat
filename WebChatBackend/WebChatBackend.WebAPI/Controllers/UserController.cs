@@ -51,7 +51,7 @@ namespace WebChatBackend.WebAPI.Controllers
                 var loginResponse = await _userService.RegisterAsync(registerCredentials);
                 if (loginResponse == null)
                 {
-                    return Unauthorized();
+                    return BadRequest("Error during registration");
                 }
 
                 return loginResponse;

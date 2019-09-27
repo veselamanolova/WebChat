@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Route, Link, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom'
-
+import axios from 'axios';
 
 class Register extends React.Component {
     constructor(props) {
@@ -22,22 +22,43 @@ class Register extends React.Component {
 
     handleRegister = () => {
         const { userName, email, password } = this.state;
+        const RegisterCredentials =
+        {
+            UserName: userName,
+            Email: email,
+            Password: password
+        }
 
-        fetch(window.webChatConfig.webApiAddress + '/user/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                userName,
-                email,
-                password
-            }),
-        })
-            .then(res => res.json())
-            .then(result => {
-                localStorage.setItem('logedInUserData', JSON.stringify(result));
-                window.location.assign(window.location.origin);
+        axios.post(
+            window.webChatConfig.webApiAddress + '/user/register',
+            RegisterCredentials,
+            {
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                debugger;
+                console.log("Response" + JSON.stringify(response));
+                console.log(JSON.stringify(response.data));
+                if (response.data) {
+                    localStorage.setItem('logedInUserData', JSON.stringify(response.data));
+                    window.location.assign(window.location.origin);
+                }
+                else {
+                    this.setState({ loginError: response.error });
+                }
+            }, error => {
+                if (error.resonse) {
+                    this.setState({ loginError: JSON.stringify(error.response) });
+                    if (error.response.data) {
+                        this.setState({ loginError: JSON.stringify(error.response.data) });
+                    }
+                }
+                else {
+                    this.setState({ loginError: "Register failed" });
+                }
             });
     };
+
 
 
     render() {
@@ -74,6 +95,15 @@ class Register extends React.Component {
                                     <button className="btn btn-primary p-1 mt-4 flex-grow-1" onClick={
                                         this.handleRegister
                                     }>Register</button>
+                                </div>
+                                <div className="flex-grow-1">
+                                    <div class="alert alert-danger ml-2 mb-0" role="alert"
+                                        style={{
+                                            paddingBottom: "6px", paddingTop: "6px",
+                                            display: this.state.loginError ? 'block' : 'none'
+                                        }}>
+                                        {this.state.loginError}
+                                    </div>
                                 </div>
                             </div>
                         </div>
