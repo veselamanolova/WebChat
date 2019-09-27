@@ -79,6 +79,26 @@ namespace WebChatBackend.Services.Tests
                 Assert.IsTrue(DateTime.UtcNow - result.LastActivityDate < TimeSpan.FromSeconds(2));
             }
         }
+
+        [TestMethod]
+        public async Task SaveGroupMessageAsync_ThrowsIfUserDoesNotBelongToAGroup()
+        {
+            const string databaseName = nameof(SaveGroupMessageAsync_ThrowsIfUserDoesNotBelongToAGroup);
+            using (var arrangeContext = new WebChatContext(TestUtils.GetOptions(databaseName)))
+            {
+                await arrangeContext.Users.AddAsync(new User { Id = "1", UserName = "User1" });
+                await arrangeContext.Groups.AddAsync(new Group { Id = 1, Name = "Group1" });
+                await arrangeContext.UserGroups.AddAsync(new UserGroup { UserId = "2", GroupId = 1 });
+                await arrangeContext.SaveChangesAsync();
+            }
+
+            using (var actContext = new WebChatContext(TestUtils.GetOptions(databaseName)))
+            {
+                var sut = new MessageService(actContext);                
+                await Assert.ThrowsExceptionAsync<GroupAccessException>(() =>sut.SaveGroupMessageAsync("1", "Message1", 1));
+            }
+        }
+
     }
 }
 
