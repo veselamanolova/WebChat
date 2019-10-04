@@ -73,12 +73,7 @@ class Chat extends Component {
             });
 
         if (groupId != null && groupId > 0) {
-          this.state.hubConnection.on("SendMessageToGroup", (name, message, groupId, receivedMessage) => {
-            const text = `${name}: ${receivedMessage}`;
-            const messages = this.state.messages.concat([text]);
-            this.setState({ messages });
-
-          });
+      
 
           this.state.hubConnection.on("ReceiveGroupMessage", (message) => {
             const messages = this.state.messages;
@@ -87,11 +82,6 @@ class Chat extends Component {
           });
         }
         else {
-          this.state.hubConnection.on('SendMessageToGlobalGroup', (name, receivedMessage) => {
-            const text = `${name}: ${receivedMessage}`;
-            const messages = this.state.messages.concat([text]);
-            this.setState({ messages });
-          });
 
           this.state.hubConnection.on("ReceiveGlobalMessage", (message) => {
             const messages = this.state.messages;
@@ -125,8 +115,6 @@ class Chat extends Component {
       searchTextStr = "?search=" + this.state.searchText;
     }
 
-
-
     fetch(window.webChatConfig.webApiAddress + "/messages/" + groupIdStr + searchTextStr, {
       method: 'GET',
       headers: {
@@ -143,6 +131,7 @@ class Chat extends Component {
           smallDeviceSearchVisible: false
         });
       });
+
   }
 
 

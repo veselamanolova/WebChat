@@ -4,6 +4,8 @@ import Chat from "./chat";
 import { createBrowserHistory } from 'history';
 import UserProfile from "./userProfile";
 import Users from "./users";
+import * as signalR from "@aspnet/signalr";
+
 
 class Groups extends Component {
 
@@ -21,15 +23,13 @@ class Groups extends Component {
         },
         groupId: null,
         name: "Public group",
-
         newGroupName: "",
         newGroupUserIds: [],
         createGroupButtonDisabled: true,
-
         newIndividualChatUserId: "",
         createIndividualChatButtonDisabled: true,
-
-        smallDeviceGroupsVisible: true
+        smallDeviceGroupsVisible: true,
+        groupsHubConnection: null
     };
 
     showGroupsOnSmallScreen = () => {
@@ -45,9 +45,13 @@ class Groups extends Component {
     }
 
     selectGroup = (group) => {
+        let index = this.state.groups.findIndex((currentGroup) => currentGroup.id === group.id)
+        let updatedGroups = [...this.state.groups];
+        updatedGroups[index].UnreadMessagesCount = 0;
         this.setState({
             name: group.name,
             groupId: group.id,
+            groups: updatedGroups
         });
         this.showChatOnSmallScreen();
 
@@ -70,11 +74,17 @@ class Groups extends Component {
         }
     }
 
-
-
     componentDidMount() {
 
         const { userId, userName, token } = this.props.userData;
+
+        let groupsHubConnection = new signalR.HubConnectionBuilder()
+            .withUrl(window.webChatConfig.signalRHubAddress, {
+                accessTokenFactory: () => token
+            })
+            .configureLogging(signalR.LogLevel.Debug)
+            .build();
+
 
         fetch(window.webChatConfig.webApiAddress + "/groups", {
             method: 'GET',
@@ -85,12 +95,49 @@ class Groups extends Component {
         })
             .then(res => res.json())
             .then(result => {
+                result.forEach(function (group) {
+                    group.UnreadMessagesCount = 0;
+                });
                 this.setState({
-                    // isLoaded: true,
                     groups: result
                 });
-            }
-            );
+            })
+            .then(() => {
+                this.setState({ groupsHubConnection },
+                    () => {
+                        this.state.groupsHubConnection.start()
+                            .then(() => {
+
+                                this.state.groups.forEach(function (group) {
+                                    console.info("SignalR connected");
+                                    //  this.state.groupsHubConnection.invoke("JoinToGroup", group.id)
+                                    groupsHubConnection.invoke("JoinToGroup", group.id)
+                                        .then(console.log("!!!Connected to" + group.id))
+                                        .catch(function (err) {
+                                            return console.error(err.toString());
+                                        });
+                                });
+
+                                groupsHubConnection.on("ReceiveGroupMessage", (message) => {
+                                    let updatedGroups = [...this.state.groups];
+                                    const group = updatedGroups.find((group) => message.groupId === group.id);
+                                    if (group.id != this.state.groupId) {
+                                        group.UnreadMessagesCount++;
+                                        this.setState({ groups: updatedGroups });
+                                    }
+
+                                });
+                            }
+                            );
+
+                        this.setState({ groupsHubConnection });
+                    })
+            });
+
+
+
+
+
     }
 
     selectedGroupUsersChanged = (selectedUsers) => {
@@ -159,6 +206,7 @@ class Groups extends Component {
             });
     }
 
+
     render() {
         const { groups, name, groupId, publicGroup, newGroupName } = this.state;
         return (
@@ -191,8 +239,12 @@ class Groups extends Component {
                                 {groups.map((group) => (
 
                                     <a href="#" class={"list-group-item list-group-item-action" + (this.state.groupId === group.id ? " active" : "")}
-                                        key={group.id} onClick={() => this.selectGroup(group)}>
+                                        key={group.id}
+
+                                        onClick={() => this.selectGroup(group)}>
                                         {group.name}
+                                        <span class={"badge badge-danger badge-pill ml-2 " + (group.UnreadMessagesCount > 0 ? "d-inline-block" : "d-none")}
+                                            style={{ "font-size": "45%" }}>{group.UnreadMessagesCount}</span>
                                     </a>
                                 ))}
                             </div>
