@@ -54,7 +54,7 @@ namespace WebChatBackend.Services.Groups
                 .Include(x => x.UserGroups).ThenInclude(ug => ug.User)
                 .First(x => x.Id == newGroup.Entity.Id);
             return new GroupWithUsers(insertedGroup, currentUserId, " ");
-        }
+        }       
 
         public async Task<List<GroupWithUsers>> GetUserGroupsAsync(string userId)
         {
@@ -62,8 +62,11 @@ namespace WebChatBackend.Services.Groups
                 .Include(g => g.UserGroups)
                 .ThenInclude(ug => ug.User)
                 .Where(g => g.UserGroups.Exists(ug => ug.UserId == userId))
+                .Include(g => g.Messages)
                 .OrderByDescending(g => g.LastActivityDate)
-                .Select(g => new GroupWithUsers(g, userId, " "))                
+                .Select(g => new GroupWithUsers(g, userId, " ", 
+                g.Messages.Count(m => 
+                m.Date>g.UserGroups.FirstOrDefault(ug => ug.UserId==userId).LastActivityDate)))               
                 .ToListAsync();
             return result;
         }

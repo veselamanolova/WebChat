@@ -5,6 +5,7 @@ import { createBrowserHistory } from 'history';
 import UserProfile from "./userProfile";
 import Users from "./users";
 import * as signalR from "@aspnet/signalr";
+import axios from 'axios';
 
 
 class Groups extends Component {
@@ -44,22 +45,55 @@ class Groups extends Component {
         });
     }
 
-    selectGroup = (group) => {
-        let index = this.state.groups.findIndex((currentGroup) => currentGroup.id === group.id)
-        let updatedGroups = [...this.state.groups];
-        updatedGroups[index].UnreadMessagesCount = 0;
+    showChatOnSmallScreen = () => {
         this.setState({
-            name: group.name,
-            groupId: group.id,
-            groups: updatedGroups
+            smallDeviceGroupsVisible: false
         });
+    }
+
+    UpdateUserGroupLastActivityDate() {
+        //updates the LastActivityDate of userGroup which the user leaves        
+
+        if (this.state.groupId != null) {
+            const { token } = this.props.userData;
+
+            axios.post(
+                window.webChatConfig.webApiAddress + '/usergroup/lastactivitydate/' + this.state.groupId,
+                {},
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        "Authorization": "Bearer " + token
+                    }
+                });
+        }
+    }
+
+    selectGroup = (group) => {
+        this.UpdateUserGroupLastActivityDate();
+        if (group.id == null) {
+            this.setState({
+                name: group.name,
+                groupId: group.id
+            });
+        }
+        else {
+            let index = this.state.groups.findIndex((currentGroup) => currentGroup.id === group.id)
+            let updatedGroups = [...this.state.groups];
+
+            updatedGroups[index].unreadMessagesCount = 0;
+            this.setState({
+                name: group.name,
+                groupId: group.id,
+                groups: updatedGroups
+            });
+        }
         this.showChatOnSmallScreen();
 
     }
 
     sendMessageAllert = () => {
         let orderedGroupsByDate = this.RearangeGroupsByLastUpdate();
-
     }
 
     RearangeGroupsByLastUpdate = () => {
@@ -85,7 +119,6 @@ class Groups extends Component {
             .configureLogging(signalR.LogLevel.Debug)
             .build();
 
-
         fetch(window.webChatConfig.webApiAddress + "/groups", {
             method: 'GET',
             headers: {
@@ -95,9 +128,6 @@ class Groups extends Component {
         })
             .then(res => res.json())
             .then(result => {
-                result.forEach(function (group) {
-                    group.UnreadMessagesCount = 0;
-                });
                 this.setState({
                     groups: result
                 });
@@ -107,12 +137,8 @@ class Groups extends Component {
                     () => {
                         this.state.groupsHubConnection.start()
                             .then(() => {
-
                                 this.state.groups.forEach(function (group) {
-                                    console.info("SignalR connected");
-                                    //  this.state.groupsHubConnection.invoke("JoinToGroup", group.id)
                                     groupsHubConnection.invoke("JoinToGroup", group.id)
-                                        .then(console.log("!!!Connected to" + group.id))
                                         .catch(function (err) {
                                             return console.error(err.toString());
                                         });
@@ -122,22 +148,14 @@ class Groups extends Component {
                                     let updatedGroups = [...this.state.groups];
                                     const group = updatedGroups.find((group) => message.groupId === group.id);
                                     if (group.id != this.state.groupId) {
-                                        group.UnreadMessagesCount++;
+                                        group.unreadMessagesCount++;
                                         this.setState({ groups: updatedGroups });
                                     }
-
                                 });
-                            }
-                            );
-
+                            });
                         this.setState({ groupsHubConnection });
                     })
             });
-
-
-
-
-
     }
 
     selectedGroupUsersChanged = (selectedUsers) => {
@@ -217,7 +235,6 @@ class Groups extends Component {
                             <div className="d-flex">
                                 <div className="flex-grow-1"><h5>Chats</h5></div>
                                 <div>
-
                                     <div class="btn-group" role="group">
                                         <button type="button" className="btn btn-outline-secondary btn-sm"
                                             data-toggle="modal" data-target="#createNewIndividualChat" title="Create new individual chat">
@@ -243,8 +260,8 @@ class Groups extends Component {
 
                                         onClick={() => this.selectGroup(group)}>
                                         {group.name}
-                                        <span class={"badge badge-danger badge-pill ml-2 " + (group.UnreadMessagesCount > 0 ? "d-inline-block" : "d-none")}
-                                            style={{ "font-size": "45%" }}>{group.UnreadMessagesCount}</span>
+                                        <span class={"badge badge-danger badge-pill ml-2 " + (group.unreadMessagesCount > 0 ? "d-inline-block" : "d-none")}
+                                            style={{ "font-size": "45%" }}>{group.unreadMessagesCount}</span>
                                     </a>
                                 ))}
                             </div>
@@ -316,7 +333,6 @@ class Groups extends Component {
                         </div>
                     </div>
                 </div>
-
             </div >
         );
     }

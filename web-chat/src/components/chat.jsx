@@ -73,7 +73,7 @@ class Chat extends Component {
             });
 
         if (groupId != null && groupId > 0) {
-      
+
 
           this.state.hubConnection.on("ReceiveGroupMessage", (message) => {
             const messages = this.state.messages;

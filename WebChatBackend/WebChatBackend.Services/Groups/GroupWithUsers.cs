@@ -14,10 +14,11 @@ namespace WebChatBackend.Services.Groups
         public bool IsPrivateChat { get; set; }
         public DateTime LastActivityDate { get; set; } 
         public List<BasicUserInfo> UsersInfo { get; set; }
+        public int UnreadMessagesCount { get; set; }
 
         public GroupWithUsers() { }        
 
-        public GroupWithUsers(Group group, string currentUserId = null, string groupNameSeparator = null)
+        public GroupWithUsers(Group group, string currentUserId = null, string groupNameSeparator = null, int unreadMessagesCount = 0)
         {
             Id = group.Id;
             Name = string.IsNullOrEmpty(group.Name) ?
@@ -25,6 +26,7 @@ namespace WebChatBackend.Services.Groups
             IsPrivateChat = group.IsPrivateChat;
             LastActivityDate = group.LastActivityDate;
             UsersInfo = group.GetUsers().Select(u => new BasicUserInfo(u)).ToList();
+            UnreadMessagesCount = unreadMessagesCount; 
         }
     }
 }

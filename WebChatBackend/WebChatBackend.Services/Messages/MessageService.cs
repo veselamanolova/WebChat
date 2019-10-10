@@ -23,10 +23,19 @@ namespace WebChatBackend.Services.Messages
             return await GetGroupMessagesAsync(null, searchText, skip, take);
         }
 
+        public async Task UpdateUserGroupLastActivityDateAsync(int groupId, string userId)
+        {
+            var userGroup = await _context.UserGroups.FirstAsync(ug => ug.GroupId == groupId&& ug.UserId ==userId);
+            userGroup.LastActivityDate = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<MessagesWithUserDataEnvelope> GetGroupMessagesAsync(int groupId, string currentUserId, string searchText, int? skip, int? take)
         {
             await VerifyUserBelongsToGroupAsync(currentUserId, groupId);
-            return await GetGroupMessagesAsync(groupId, searchText, skip, take);
+            var result = await GetGroupMessagesAsync(groupId, searchText, skip, take);
+            await UpdateUserGroupLastActivityDateAsync(groupId, currentUserId); 
+            return result; 
         }
 
         private async Task<MessagesWithUserDataEnvelope> GetGroupMessagesAsync(int? groupId, string searchText, int? skip, int? take)
@@ -73,7 +82,8 @@ namespace WebChatBackend.Services.Messages
 
             if (groupId != null)
             {
-               await UpdateGroupLastActivityDate(groupId, message);
+                await UpdateGroupLastActivityDate(groupId, message);
+                await UpdateUserGroupLastActivityDateAsync((int)groupId, userId); 
             }
             await _context.SaveChangesAsync();
 

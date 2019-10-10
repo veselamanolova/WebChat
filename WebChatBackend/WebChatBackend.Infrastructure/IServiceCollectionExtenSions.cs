@@ -7,6 +7,7 @@ using WebChatBackend.Services.Contracts;
 using WebChatBackend.Services.UserManagement;
 using WebChatBackend.Services.Groups;
 using WebChatBackend.Services.Messages;
+using WebChatBackend.Services.UserGroups;
 
 namespace WebChatBackend.Infrastructure
 {
@@ -19,6 +20,7 @@ namespace WebChatBackend.Infrastructure
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IUserGroupService, UserGroupService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IJwtGenerator, JwtGenerator> (); 
 
