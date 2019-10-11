@@ -10,6 +10,7 @@ class Users extends Component {
             selectedUsers: [],
             selectedUser: null
         };
+        this.typingTimer = null;
     }
 
     componentDidMount() {
@@ -40,15 +41,12 @@ class Users extends Component {
 
 
     loadUsers = () => {
-
         const { userName, token } = this.props.userData;
 
         let searchUserTextStr = "";
         if (this.state.searchUserText) {
             searchUserTextStr = "&search=" + this.state.searchUserText;
         }
-
-
 
         fetch(`${window.webChatConfig.webApiAddress}/user/?excludeCurrent=true${searchUserTextStr}`, {
             method: 'GET',
@@ -76,6 +74,13 @@ class Users extends Component {
         }, () => { if (oldSearchText) this.loadUsers(); });
     }
 
+    searchValueChanged = (event) => {
+        console.log(event.key);
+        this.setState({ searchUserText: event.target.value });
+        clearTimeout(this.typingTimer);
+        this.typingTimer = setTimeout(() => this.loadUsers(), 500);
+    }
+
     render() {
         const { users, searchUserText, selectedUsers } = this.state;
         return (
@@ -85,37 +90,35 @@ class Users extends Component {
                     <div class="form-inline">
                         <div class="input-group">
                             <input className="form-control form-control-sm" type="text" placeholder="Search user"
-                                value={searchUserText} onChange={e => this.setState({ searchUserText: e.target.value })} />
+                                value={searchUserText}
+                                onChange={this.searchValueChanged}
+                            />
                             <div class="input-group-append">
-                                <button className="btn btn-sm btn-outline-secondary" onClick={this.loadUsers} title="Search">
+                                <button className="btn btn-sm btn-outline-secondary"
+                                    onClick={this.loadUsers}
+                                    title="Search">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
                         </div>
-
-
-                        {/* <input className="form-control form-control-sm" type="text" placeholder="Search user"
-                            value={searchUserText} onChange={e => this.setState({ searchUserText: e.target.value })} />
-                        <button className="btn btn-sm btn-outline-secondary ml-1" onClick={this.loadUsers} title="Search">
-                            <i class="fas fa-search"></i>
-                        </button> */}
                     </div>
                 </div>
-                {users.map((user) => {
-                    let isUserSelected = selectedUsers.some(u => u.id === user.id);
+                {
+                    users.map((user) => {
+                        let isUserSelected = selectedUsers.some(u => u.id === user.id);
 
-                    return <div key={user.id} class={"list-group-item list-group-item-action" + (isUserSelected ? " active" : "")}
+                        return <div key={user.id} class={"list-group-item list-group-item-action" + (isUserSelected ? " active" : "")}
 
-                        onClick={() => this.selectUser(user)}>
+                            onClick={() => this.selectUser(user)}>
 
-                        {user.userName}
+                            {user.userName}
 
-                    </div>
-                })}
-            </div>
+                        </div>
+                    })
+                }
+            </div >
         );
     }
 }
-
 
 export default Users;
