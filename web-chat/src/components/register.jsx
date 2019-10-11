@@ -56,7 +56,11 @@ class Register extends React.Component {
             });
     };
 
-
+    keyPressed = (event) => {
+        if (event.key === "Enter") {
+            this.handleRegister()
+        }
+    }
 
     render() {
         const { userName, email, password } = this.state;
@@ -72,6 +76,7 @@ class Register extends React.Component {
                                     <input type="userName" class="form-control bg-light" id="userName"
                                         value={userName}
                                         onChange={e => this.setState({ userName: e.target.value })}
+                                        onKeyPress={this.keyPressed}
                                     />
                                 </div>
                                 <div class="form-group">
@@ -79,6 +84,7 @@ class Register extends React.Component {
                                     <input type="text" class="form-control bg-light" id="email"
                                         value={email}
                                         onChange={e => this.setState({ email: e.target.value })}
+                                        onKeyPress={this.keyPressed}
                                     />
                                 </div>
                                 <div class="form-group">
@@ -86,6 +92,7 @@ class Register extends React.Component {
                                     <input type="password" class="form-control bg-light" id="password"
                                         value={password}
                                         onChange={e => this.setState({ password: e.target.value })}
+                                        onKeyPress={this.keyPressed}
                                     />
                                 </div>
                                 <div className="d-flex">

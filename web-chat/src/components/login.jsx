@@ -50,6 +50,12 @@ class Login extends React.Component {
             });
     }
 
+    keyPressed = (event) => {
+        if (event.key === "Enter") {
+            this.sendLoginCredentials()
+        }
+    }
+
     render() {
         const { email, password } = this.state;
         return (
@@ -64,6 +70,7 @@ class Login extends React.Component {
                                     <input type="text" class="form-control bg-light" id="email" placeholder="email"
                                         value={email}
                                         onChange={e => this.setState({ email: e.target.value })}
+                                        onKeyPress={this.keyPressed}
                                     />
                                 </div>
                                 <div class="form-group">
@@ -71,6 +78,7 @@ class Login extends React.Component {
                                     <input type="password" class="form-control bg-light" id="password"
                                         value={password}
                                         onChange={e => this.setState({ password: e.target.value })}
+                                        onKeyPress={this.keyPressed}
                                     />
                                 </div>
                                 <div className="d-flex">

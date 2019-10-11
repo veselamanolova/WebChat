@@ -246,7 +246,8 @@ class UserProfile extends React.Component {
                                             value={password.oldPassword} onChange={e => {
                                                 password.oldPassword = e.target.value;
                                                 this.setState({ password });
-                                            }} />
+                                            }}
+                                            onKeyPress={this.changePasswordKeyPressed} />
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -256,7 +257,8 @@ class UserProfile extends React.Component {
                                             value={password.newPassword} onChange={e => {
                                                 password.newPassword = e.target.value;
                                                 this.setState({ password });
-                                            }} />
+                                            }}
+                                            onKeyPress={this.changePasswordKeyPressed} />
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -264,11 +266,11 @@ class UserProfile extends React.Component {
                                     <div class="col-sm-9">
                                         <input type="password" class="form-control" id="repeatPassword"
                                             value={password.repeatPassword}
-                                            onKeyPress={this.changePasswordKeyPressed}
                                             onChange={e => {
                                                 password.repeatPassword = e.target.value;
                                                 this.setState({ password });
-                                            }} />
+                                            }}
+                                            onKeyPress={this.changePasswordKeyPressed} />
                                     </div>
                                 </div>
 
