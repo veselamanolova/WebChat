@@ -164,6 +164,12 @@ class Chat extends Component {
     }
   };
 
+  keyPressed = (event) => {
+    if (event.key === "Enter") {
+      this.sendMessage()
+    }
+  }
+
   render() {
     const { userId, userName, token } = this.props.userData;
     const { error, isLoaded, messages, messageText, groupId, name, searchText } = this.state;
@@ -248,7 +254,7 @@ class Chat extends Component {
             <div class="d-flex">
               <div class="p-2 flex-grow-1">
                 <input className="form-control" type="text" placeholder="Type message here"
-                  value={messageText} onChange={e => this.setState({ messageText: e.target.value })} />
+                  value={messageText} onKeyPress={this.keyPressed} onChange={e => this.setState({ messageText: e.target.value })} />
               </div>
               <div class="p-2 bd-highlight">
                 <button className="btn btn-primary" onClick={this.sendMessage

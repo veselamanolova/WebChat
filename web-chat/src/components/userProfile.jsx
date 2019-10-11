@@ -34,6 +34,12 @@ class UserProfile extends React.Component {
             .then(user => this.setState({ user }));
     }
 
+    updateUserNameKeyPressed = (event) => {
+        if (event.key === "Enter") {
+            this.update()
+        }
+    }
+
     update = () => {
         this.setState(prevState => ({
             user: {
@@ -171,6 +177,12 @@ class UserProfile extends React.Component {
             });
     }
 
+    changePasswordKeyPressed = (event) => {
+        if (event.key === "Enter") {
+            this.changePassword()
+        }
+    }
+
     render() {
         const { user, password } = this.state;
 
@@ -185,14 +197,14 @@ class UserProfile extends React.Component {
                                     <label for="userName" class="col-sm-3  col-form-label">User name</label>
                                     <div class="col-sm-9" >
                                         <input type="text" class="form-control" id="userName"
-                                            value={user.userName} onChange={e => {
+                                            value={user.userName}
+                                            onKeyPress={this.updateUserNameKeyPressed}
+                                            onChange={e => {
                                                 user.userName = e.target.value;
                                                 this.setState({ user });
                                             }} />
                                     </div>
                                 </div>
-
-
 
                                 <div className="d-flex">
                                     <button class="btn btn-primary" onClick={this.update}>Update</button>
@@ -251,7 +263,9 @@ class UserProfile extends React.Component {
                                     <label for="repeatPassword" class="col-sm-3 col-form-label">Repeat password</label>
                                     <div class="col-sm-9">
                                         <input type="password" class="form-control" id="repeatPassword"
-                                            value={password.repeatPassword} onChange={e => {
+                                            value={password.repeatPassword}
+                                            onKeyPress={this.changePasswordKeyPressed}
+                                            onChange={e => {
                                                 password.repeatPassword = e.target.value;
                                                 this.setState({ password });
                                             }} />
