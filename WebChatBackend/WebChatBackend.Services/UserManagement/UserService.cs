@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,25 +21,28 @@ namespace WebChatBackend.Services.UserManagement
         private readonly SignInManager<User> _signInManager;
         private readonly IJwtGenerator _jwtGenerator;
         private readonly IConfiguration _configuration;
+        private readonly IFileService _fileService;
 
         public UserService(WebChatContext context, UserManager<User> userManager, SignInManager<User> signInManager, 
-            IJwtGenerator jwtGenerator, IConfiguration configuration)
+            IJwtGenerator jwtGenerator, IConfiguration configuration, IFileService fileService)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtGenerator = jwtGenerator;
             _configuration = configuration;
+            _fileService = fileService;
         }
 
         public async Task<List<BasicUserInfo>> GetAllUsersAsync(bool excludeCurrent, string currentUserId, string searchText) =>
            await _context.Users
             .Where(u => (string.IsNullOrEmpty(searchText) || u.UserName.Contains(searchText))
                     && (!excludeCurrent || u.Id != currentUserId))
-            .Select(u => new BasicUserInfo
+            .Select(u => new BasicUserInfo()
            {
                Id = u.Id,
-               UserName = u.UserName
+               UserName = u.UserName, 
+               ProfilePicturePath = u.ProfilePicturePath
             })
             .OrderBy(u => u.UserName)
             .ToListAsync();
@@ -45,34 +50,15 @@ namespace WebChatBackend.Services.UserManagement
         public async Task<BasicUserInfo> GetUserAsync(string id) =>
            await _context.Users
             .Where(u => u.Id == id)
-            .Select(u => new BasicUserInfo
+            .Select(u => new BasicUserInfo()
             {
                 Id = u.Id,
-                UserName = u.UserName
+                UserName = u.UserName,
+                ProfilePicturePath = u.ProfilePicturePath
             })
             .SingleOrDefaultAsync();
 
-        public async Task<UpdateUserResponse> UpdateUserAsync(BasicUserInfo userData)
-        {
-            User user = await _context.Users
-                .Where(u => u.Id == userData.Id)
-                .SingleOrDefaultAsync();
-            if (user == null)
-                return null;
-
-            IdentityResult identityResult = await _userManager.SetUserNameAsync(user, userData.UserName);
-            var result = new UpdateUserResponse
-            {
-                Success = identityResult.Succeeded,
-                Error = identityResult.Succeeded ? null : string.Join(' ', identityResult.Errors.Select(e => e.Description)),
-                UserInfo = !identityResult.Succeeded ? null : new BasicUserInfo
-                {
-                    Id = user.Id,
-                    UserName = user.UserName
-                }
-            };
-            return result;
-        }
+       
 
         public async Task<LoginResponse> LoginAsync(LoginCredentials loginCredentials)
         {
@@ -102,7 +88,8 @@ namespace WebChatBackend.Services.UserManagement
             {
                 UserId = user.Id,
                 UserName = user.UserName,
-                Token = _jwtGenerator.CreateToken(user, _configuration["SecurityKey"])
+                Token = _jwtGenerator.CreateToken(user, _configuration["SecurityKey"]), 
+                ProfilePicturePath = user.ProfilePicturePath
             };
         }
 
@@ -156,7 +143,8 @@ namespace WebChatBackend.Services.UserManagement
             {
                 UserId = user.Id,
                 UserName = user.UserName,
-                Token = _jwtGenerator.CreateToken(user, _configuration["SecurityKey"])
+                Token = _jwtGenerator.CreateToken(user, _configuration["SecurityKey"]),
+                ProfilePicturePath = user.ProfilePicturePath
             };
         }
 
@@ -173,5 +161,43 @@ namespace WebChatBackend.Services.UserManagement
             }
             return result.ToString();
         }
+
+        public async Task<UpdateUserResponse> UpdateUserAsync(BasicUserInfo userData)
+        {
+            User user = await _context.Users
+                .Where(u => u.Id == userData.Id)
+                .SingleOrDefaultAsync();
+            if (user == null)
+                return null;
+
+            IdentityResult identityResult = await _userManager.SetUserNameAsync(user, userData.UserName);
+            var result = new UpdateUserResponse
+            {
+                Success = identityResult.Succeeded,
+                Error = identityResult.Succeeded ? null : string.Join(' ', identityResult.Errors.Select(e => e.Description)),
+                UserInfo = !identityResult.Succeeded ? null : new BasicUserInfo(user)                
+            };
+            return result;
+        }
+
+
+      
+        public async Task<UpdateUserResponse> SaveUserProfilePicture(string userId, string folder, string fileName, byte[] content)
+        {
+            string filePath = Path.Combine(folder, userId, fileName);
+            await _fileService.SaveAsync(filePath, content);
+            // TODO: save profile picture file path in DB$
+            User user = await _context.Users.FirstAsync(x => x.Id == userId);
+            user.ProfilePicturePath = Path.Combine(userId, fileName);
+            await _context.SaveChangesAsync();
+
+            return new UpdateUserResponse
+            {
+                Success = true,
+                UserInfo = new BasicUserInfo(user),
+                Error = ""
+            }; 
+        }
+
     }
 }

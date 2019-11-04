@@ -143,7 +143,9 @@ class Chat extends Component {
   }
 
   componentWillUnmount() {
-    this.state.hubConnection.stop();
+    if (this.state.hubConnection != null) {
+      this.state.hubConnection.stop();
+    }
     this.state.messages = [];
   }
 
@@ -237,7 +239,18 @@ class Chat extends Component {
 
                   return <div key={index} class="p-2" style={{ ["margin-" + (isCurrentUserMessage ? "left" : "right")]: "25%" }} >
                     {
-                      (isPreviousMessageFromTheSameUser || isCurrentUserMessage) ? "" : message.userName
+                      (isPreviousMessageFromTheSameUser || isCurrentUserMessage)
+                        ? ""
+                        : <span>
+                          {
+                            (message.profilePicturePath) ?
+                              <img src={window.webChatConfig.webApiPictureAddress + message.profilePicturePath}
+                                class="rounded-circle" width="25" height="25"></img>
+                              : ""
+                          }
+                          {message.userName}
+                        </span>
+
                     }
 
                     < div class={"alert alert-" + (isCurrentUserMessage ? "primary" : "secondary")}>

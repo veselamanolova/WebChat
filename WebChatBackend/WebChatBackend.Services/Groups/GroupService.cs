@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,11 @@ namespace WebChatBackend.Services.Groups
 {
     public class GroupService : IGroupService
     {
-        private readonly WebChatContext _context;
+        private readonly WebChatContext _context;      
 
         public GroupService(WebChatContext context)
         {
-            _context = context;
+            _context = context; 
         }
 
         public async Task<GroupWithUsers> CreateNewGroupAsync(CreateGroupRequest createGroupRequest, string currentUserId)

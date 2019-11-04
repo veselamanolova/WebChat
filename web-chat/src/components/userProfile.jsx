@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from 'axios';
 
 class UserProfile extends React.Component {
     constructor(props) {
@@ -8,6 +9,7 @@ class UserProfile extends React.Component {
             user: {
                 id: '',
                 userName: '',
+                profilePicture: '',
                 updateUserError: '',
                 updateUserSuccess: false
             },
@@ -17,7 +19,8 @@ class UserProfile extends React.Component {
                 repeatPassword: '',
                 changePasswordError: '',
                 changesPasswordSuccess: false
-            }
+            },
+            selectedFile: null
         };
     }
 
@@ -31,7 +34,11 @@ class UserProfile extends React.Component {
                 "Authorization": "Bearer " + token
             }
         }).then(res => res.json())
-            .then(user => this.setState({ user }));
+            .then(
+                user => {
+                    this.setState({ user })
+                }
+            );
     }
 
     updateUserNameKeyPressed = (event) => {
@@ -41,6 +48,7 @@ class UserProfile extends React.Component {
     }
 
     update = () => {
+
         this.setState(prevState => ({
             user: {
                 ...prevState.user,
@@ -183,13 +191,62 @@ class UserProfile extends React.Component {
         }
     }
 
+    pictureSelectHandler = (event) => {
+        this.setState({
+            selectedFile: event.target.files[0]
+        })
+    }
+
+    pictureUploadHandler = () => {
+        const { selectedFile } = this.state;
+        const { token } = this.props.userData;
+        let data = new FormData();
+        data.append("imageInput", selectedFile);
+
+        axios.post(window.webChatConfig.webApiAddress + '/user/uploadProfilePicture',
+            data,
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then(result => {
+                if (result.data.success) {
+                    this.props.updateHandler(result.data.userInfo);
+                    this.setState(prevState => ({
+                        user: {
+                            user: result.data.userInfo,
+                            updateUserError: '',
+                            updateUserSuccess: true
+                        }
+
+                    }));
+                }
+            });
+    }
+
+
+
+
     render() {
         const { user, password } = this.state;
 
         return (
             <div className="row">
                 <div className="container col-sm-12 col-lg-6" style={{ "max-width": "100%" }}>
-                    <h5 className="m-3">{user.userName}'s user profile</h5>
+                    <div className="m-1 row">
+                        <div className="col-2">
+                            {
+                                (this.props.userData.profilePicturePath !== "") ?
+                                    <img src={window.webChatConfig.webApiPictureAddress + this.props.userData.profilePicturePath}
+                                        width="80" height="80"></img> : ""
+                            }
+                        </div>
+                        <div className="col-8 text-center"> <h5>{user.userName}'s user profile</h5> </div>
+                        <div className="col-2"></div>
+                    </div>
+
                     <div className="mb-3">
                         <div class="card">
                             <div class="card-body">
@@ -223,10 +280,43 @@ class UserProfile extends React.Component {
                                             paddingBottom: "6px", paddingTop: "6px",
                                             display: this.state.user.updateUserSuccess ? 'block' : 'none'
                                         }}>
-                                        Profile data updated successfully.
+                                        User name updated successfully.
                                     </div>
-
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div className="mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <div class="col-sm-9" >
+                                        <input type="file" class="form-control"
+                                            onChange={this.pictureSelectHandler} />
+                                    </div>
+                                </div>
+                                <div className="d-flex">
+                                    <button class="btn btn-primary" onClick={this.pictureUploadHandler}>Upload</button>
+                                </div>
+
+                                {/* <div className="flex-grow-1">
+                                    <div class="alert alert-danger ml-2 mb-0" role="alert"
+                                        style={{
+                                            paddingBottom: "6px", paddingTop: "6px",
+                                            display: this.state.user.updateUserError ? 'block' : 'none'
+                                        }}>
+                                        {this.state.user.updateUserError}
+                                    </div>
+                                    <div class="alert alert-success ml-2 mb-0" role="alert"
+                                        style={{
+                                            paddingBottom: "6px", paddingTop: "6px",
+                                            display: this.state.user.updateUserSuccess ? 'block' : 'none'
+                                        }}>
+                                        User name updated successfully.
+                                    </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

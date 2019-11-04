@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebChatBackend.Data.Models;
 using WebChatBackend.Services.UserManagement;
 
 namespace WebChatBackend.Services.Contracts
@@ -13,5 +13,6 @@ namespace WebChatBackend.Services.Contracts
         Task<BasicUserInfo> GetUserAsync(string id);
         Task<UpdateUserResponse> UpdateUserAsync(BasicUserInfo userData);
         Task<string> ChangePasswordAsync(ChangePasswordRequest request);
+        Task<UpdateUserResponse> SaveUserProfilePicture(string userId, string folder, string fileName, byte[] content); 
     }
 }

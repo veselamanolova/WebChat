@@ -78,6 +78,7 @@ namespace WebChatBackend.WebAPI
                 app.UseHsts();
             }
 
+            app.UseStaticFiles();
             app.UseAuthentication(); 
             app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();

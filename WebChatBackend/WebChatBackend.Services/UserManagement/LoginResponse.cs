@@ -9,5 +9,6 @@ namespace WebChatBackend.Services.UserManagement
         public string UserId { get; set; }
         public string UserName { get; set;  }
         public string Token { get; set; }
+        public string ProfilePicturePath { get; set; }
     }
 }

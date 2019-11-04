@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,8 +16,8 @@ namespace WebChatBackend.Services.Groups
         public DateTime LastActivityDate { get; set; } 
         public List<BasicUserInfo> UsersInfo { get; set; }
         public int UnreadMessagesCount { get; set; }
-
-        public GroupWithUsers() { }        
+      
+     
 
         public GroupWithUsers(Group group, string currentUserId = null, string groupNameSeparator = null, int unreadMessagesCount = 0)
         {

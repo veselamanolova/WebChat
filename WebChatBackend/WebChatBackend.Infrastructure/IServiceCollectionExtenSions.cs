@@ -22,7 +22,8 @@ namespace WebChatBackend.Infrastructure
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IUserGroupService, UserGroupService>();
             services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IJwtGenerator, JwtGenerator> (); 
+            services.AddScoped<IJwtGenerator, JwtGenerator> ();
+            services.AddScoped<IFileService, FileService>(); 
 
             return services;
         }

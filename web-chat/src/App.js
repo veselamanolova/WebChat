@@ -30,6 +30,7 @@ class App extends Component {
   updateLoggedInUser = (basicUserInfo) => {
     var storedUser = JSON.parse(localStorage.getItem('logedInUserData'));
     storedUser.userName = basicUserInfo.userName;
+    storedUser.profilePicturePath = basicUserInfo.profilePicturePath;
     localStorage.setItem('logedInUserData', JSON.stringify(storedUser));
     this.setState({
       userData: storedUser
@@ -51,7 +52,11 @@ class App extends Component {
       ? (
         <nav class="navbar navbar-light bg-light mb-2">
           <Link to="/" className="navbar-brand">WebChat</Link>
-          <Link to="/profile" className="nav-link ml-auto">Hi, {this.state.userData.userName}</Link>
+          <Link to="/profile" className="nav-link ml-auto">
+            {(this.state.userData.profilePicturePath !== "") ?
+              <img src={window.webChatConfig.webApiPictureAddress + this.state.userData.profilePicturePath}
+                class="rounded-circle" width="25" height="25"></img> : ""}
+            Hi, {this.state.userData.userName}</Link>
           <a className="nav-link" href="#" onClick={this.handleLogout} title="Logout">
             <i class="fas fa-sign-out-alt"></i>
           </a>
