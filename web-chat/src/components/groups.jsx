@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import { Route, Link, BrowserRouter as Router, Switch, withRouter } from 'react-router-dom';
 import Chat from "./chat";
-import { createBrowserHistory } from 'history';
-import UserProfile from "./userProfile";
+import GroupAvatar from "./groupAvatar";
 import Users from "./users";
 import * as signalR from "@aspnet/signalr";
 import axios from 'axios';
-import { ninvoke } from "q";
-
 
 class Groups extends Component {
 
@@ -259,25 +256,16 @@ class Groups extends Component {
                                     <a href="#" className={"list-group-item list-group-item-action" + (this.state.groupId === group.id ? " active" : "")}
                                         key={group.id}
                                         onClick={() => this.selectGroup(group)}>
+
                                         <div className="row">
                                             <div className="col-2">
-                                                {/* {group.usersInfo.map((user, count = 0, topIndent = 0, width = 25, hight = 50, i = 0) => (
-                                                (user.id != this.props.userData.userId) ?
-                                                    (user.profilePicturePath !== "") ?
-                                                        <img src={window.webChatConfig.webApiPictureAddress + user.profilePicturePath}
-                                                            className="rounded-circle d-inline" width="50" height="50"
-                                                            style={{
-                                                                //"position": "absolute",
-                                                                "position": "relative",
-                                                                // "left": `${left + 25}px`,
-                                                                "clip": `rect(${topIndent}px,${width}px,${hight}px,${topIndent}px)`,
-                                                                // "zIndex": count++
-                                                            }}
-                                                        ></img> : "" : ""
+                                                <GroupAvatar
+                                                    usersInfo={group.usersInfo}
+                                                    logedInUserId={this.props.userData.userId}
+                                                />
 
-                                            ))} */}
 
-                                                {(group.usersInfo[0]) &&
+                                                {/*   {(group.usersInfo[0]) &&
                                                     (group.usersInfo[0].id != this.props.userData.userId) &&
                                                     (group.usersInfo[0].profilePicturePath !== "") ?
                                                     <img src={window.webChatConfig.webApiPictureAddress + group.usersInfo[0].profilePicturePath}
@@ -309,6 +297,7 @@ class Groups extends Component {
                                                             "clip": `rect(${15}px,${30}px,${30}px,${15}px)`,//right down
                                                             //  "zIndex": 1
                                                         }} ></img> : ""}
+                                                         */}
 
                                             </div>
                                             <div className='col-10'>
