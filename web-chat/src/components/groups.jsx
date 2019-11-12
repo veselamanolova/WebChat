@@ -6,6 +6,7 @@ import UserProfile from "./userProfile";
 import Users from "./users";
 import * as signalR from "@aspnet/signalr";
 import axios from 'axios';
+import { ninvoke } from "q";
 
 
 class Groups extends Component {
@@ -253,15 +254,70 @@ class Groups extends Component {
                                     onClick={() => this.selectGroup(publicGroup)}>
                                     Public group
                                  </a>
+
                                 {groups.map((group) => (
-
-                                    <a href="#" class={"list-group-item list-group-item-action" + (this.state.groupId === group.id ? " active" : "")}
+                                    <a href="#" className={"list-group-item list-group-item-action" + (this.state.groupId === group.id ? " active" : "")}
                                         key={group.id}
-
                                         onClick={() => this.selectGroup(group)}>
-                                        {group.name}
-                                        <span class={"badge badge-danger badge-pill ml-2 " + (group.unreadMessagesCount > 0 ? "d-inline-block" : "d-none")}
-                                            style={{ "font-size": "45%" }}>{group.unreadMessagesCount}</span>
+                                        <div className="row">
+                                            <div className="col-2">
+                                                {/* {group.usersInfo.map((user, count = 0, topIndent = 0, width = 25, hight = 50, i = 0) => (
+                                                (user.id != this.props.userData.userId) ?
+                                                    (user.profilePicturePath !== "") ?
+                                                        <img src={window.webChatConfig.webApiPictureAddress + user.profilePicturePath}
+                                                            className="rounded-circle d-inline" width="50" height="50"
+                                                            style={{
+                                                                //"position": "absolute",
+                                                                "position": "relative",
+                                                                // "left": `${left + 25}px`,
+                                                                "clip": `rect(${topIndent}px,${width}px,${hight}px,${topIndent}px)`,
+                                                                // "zIndex": count++
+                                                            }}
+                                                        ></img> : "" : ""
+
+                                            ))} */}
+
+                                                {(group.usersInfo[0]) &&
+                                                    (group.usersInfo[0].id != this.props.userData.userId) &&
+                                                    (group.usersInfo[0].profilePicturePath !== "") ?
+                                                    <img src={window.webChatConfig.webApiPictureAddress + group.usersInfo[0].profilePicturePath}
+                                                        className="rounded-circle d-inline" width="30" height="30" style={{
+                                                            "position": "absolute",
+                                                            //"clip": `rect(${0}px,${50}px,${25}px,${0}px)`,//left
+                                                            "clip": `rect(${0}px,${30}px,${30}px,${0}px)`,//left  
+                                                            // "zIndex": 0
+                                                        }} ></img> : ""}
+
+
+                                                {(group.usersInfo[1]) &&
+                                                    (group.usersInfo[1].id != this.props.userData.userId) &&
+                                                    (group.usersInfo[1].profilePicturePath !== "") ?
+                                                    <img src={window.webChatConfig.webApiPictureAddress + group.usersInfo[1].profilePicturePath}
+                                                        className="rounded-circle d-inline" width="30" height="30" style={{
+                                                            "position": "absolute",
+                                                            "clip": `rect(${0}px,${30}px,${30}px,${15}px)`,//right  
+                                                            // "clip": `rect(${0}px,${50}px,${25}px,${25}px)`//right up   
+                                                            //  "zIndex": 1
+                                                        }} ></img> : ""}
+
+                                                {(group.usersInfo[2]) &&
+                                                    (group.usersInfo[2].id != this.props.userData.userId) &&
+                                                    (group.usersInfo[2].profilePicturePath !== "") ?
+                                                    <img src={window.webChatConfig.webApiPictureAddress + group.usersInfo[2].profilePicturePath}
+                                                        className="rounded-circle d-inline" width="30" height="30" style={{
+                                                            "position": "absolute",
+                                                            "clip": `rect(${15}px,${30}px,${30}px,${15}px)`,//right down
+                                                            //  "zIndex": 1
+                                                        }} ></img> : ""}
+
+                                            </div>
+                                            <div className='col-10'>
+                                                {group.name}
+                                                <span class={"badge badge-danger badge-pill ml-2 " + (group.unreadMessagesCount > 0 ? "d-inline-block" : "d-none")}
+                                                    style={{ "font-size": "45%", "hight": "100px" }}>{group.unreadMessagesCount}</span>
+                                            </div>
+                                        </div>
+
                                     </a>
                                 ))}
                             </div>
@@ -276,7 +332,7 @@ class Groups extends Component {
                             showGroupsOnSmallScreen={this.showGroupsOnSmallScreen}>
                         </Chat>
                     </div>
-                </div>
+                </div >
 
                 <div class="modal fade" id="createNewGroup" tabindex="-1" role="dialog" aria-labelledby="createNewGroupLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
