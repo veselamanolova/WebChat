@@ -37,7 +37,7 @@ namespace WebChatBackend.Services.UserManagement
 
         private string GetPrivatePictureUrl()
         {
-            string result = String.IsNullOrEmpty(profilePicturePath) ? "" : profilePicturePath.Replace('\\', '/');
+            string result = String.IsNullOrEmpty(profilePicturePath) ? "blankProfilePicture.png" : profilePicturePath.Replace('\\', '/');
             return result; 
         }
     }

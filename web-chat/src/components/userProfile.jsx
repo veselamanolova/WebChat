@@ -36,6 +36,7 @@ class UserProfile extends React.Component {
         }).then(res => res.json())
             .then(
                 user => {
+                    debugger;
                     this.setState({ user })
                 }
             );
